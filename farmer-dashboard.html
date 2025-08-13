@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কৃষক ড্যাশবোর্ড - কৃষিসেতু</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Bengali', Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logout-btn, .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .welcome-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .stipend-card {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .stipend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stipend-amount {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .price-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .price-card {
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            background: white;
+            position: relative;
+            min-height: 400px;
+        }
+        
+        .price-card:hover {
+            border-color: #4CAF50;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .product-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .highest-price {
+            font-size: 3rem;
+            color: #4CAF50;
+            font-weight: bold;
+            margin: 1.5rem 0;
+        }
+        
+        .price-label {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .price-label::before {
+            content: "🏆";
+            margin-right: 0.5rem;
+        }
+        
+        .order-btn {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .order-btn:hover {
+            background: linear-gradient(135deg, #45a049, #5cb85c);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+        
+        .orders-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .order-item {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: #fafafa;
+        }
+        
+        .order-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        /* FIXED MODAL STYLES - This is the main fix */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            /* Enable scrolling on the modal backdrop */
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 0 auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            /* Remove fixed positioning to allow natural flow */
+            position: relative;
+            /* Add some margin for better spacing */
+            margin-top: 20px;
+            margin-bottom: 20px;
+            /* Ensure content doesn't overflow */
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .best-price-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transform: rotate(15deg);
+        }
+
+        .company-price-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border-left: 4px solid #4CAF50;
+            transition: all 0.3s;
+        }
+
+        .company-price-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .company-price-item.second-best {
+            border-left-color: #2196F3;
+        }
+
+        /* Mobile responsiveness for modal */
+        @media (max-width: 768px) {
+            .modal {
+                padding: 10px 0;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                max-height: calc(100vh - 20px);
+            }
+            
+            .form-group input {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Ensure modal scrolls properly on very small screens */
+        @media (max-height: 600px) {
+            .modal-content {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="goBack()">← পূর্ববর্তী</button>
+        <div class="logo">🌾 কৃষিসেতু</div>
+        <div class="user-info">
+            <span id="farmerName">কৃষক</span>
+            <button class="logout-btn" onclick="logout()">লগআউট</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="welcome-card">
+            <h2>স্বাগতম, <span id="welcomeName"></span>!</h2>
+            <p>সর্বোচ্চ গ্যারান্টিযুক্ত দরে সেরা কোম্পানির সাথে ফসল বিক্রি করুন</p>
+        </div>
+        
+        <div class="stipend-card">
+            <h3>💰 মাসিক স্টাইপেন</h3>
+            <div class="stipend-grid">
+                <div>
+                    <div class="stipend-amount">৳৫০০</div>
+                    <div>এই মাসের স্টাইপেন</div>
+                </div>
+                <div>
+                    <div class="stipend-amount" id="totalStipend">৳০</div>
+                    <div>মোট স্টাইপেন</div>
+                </div>
+                <div>
+                    <div style="font-size: 1.2rem; font-weight: bold;">পরবর্তী পেমেন্ট: ১৫ দিন</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">প্রতি মাসের ১ তারিখে</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="price-section">
+            <h3>📊 সর্বোচ্চ গ্যারান্টিযুক্ত বাজার দর</h3>
+            <p>প্রতিটি পণ্যের জন্য সর্বোচ্চ দর - স্বয়ংক্রিয়ভাবে সেরা কোম্পানির সাথে সংযুক্ত</p>
+            <div class="price-grid" id="priceGrid">
+                 Price cards will be populated by JavaScript 
+            </div>
+        </div>
+        
+        <div class="orders-section">
+            <h3>📋 আমার অর্ডারসমূহ</h3>
+            <div id="ordersList">
+                 Orders will be populated by JavaScript 
+            </div>
+        </div>
+    </div>
+    
+     FIXED ORDER MODAL - Now properly scrollable 
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>অর্ডার দিন</h3>
+            <form onsubmit="submitOrder(event)">
+                <div class="form-group">
+                    <label>পণ্য:</label>
+                    <input type="text" id="orderProduct" readonly>
+                </div>
+                <div class="form-group">
+                    <label>সর্বোচ্চ দর:</label>
+                    <input type="text" id="orderPrice" readonly>
+                </div>
+                <div class="form-group">
+                    <label>পরিমাণ (ন্যূনতম ১০০ পিস):</label>
+                    <input type="number" id="orderQuantity" min="100" required>
+                </div>
+                <div class="form-group">
+                    <label>তারিখ:</label>
+                    <input type="date" id="orderDate" required>
+                </div>
+                <div class="form-group">
+                    <label>সময়:</label>
+                    <input type="time" id="orderTime" required>
+                </div>
+                <div class="form-group">
+                    <label>স্থান:</label>
+                    <input type="text" id="orderLocation" required>
+                </div>
+                <button type="submit" class="order-btn">অর্ডার নিশ্চিত করুন</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        // Check if farmer is logged in
+        const currentFarmer = JSON.parse(localStorage.getItem('currentFarmer'));
+        if (!currentFarmer) {
+            window.location.href = 'farmer-login.html';
+        }
+        
+        // Display farmer name
+        document.getElementById('farmerName').textContent = currentFarmer.name;
+        document.getElementById('welcomeName').textContent = currentFarmer.name;
+        
+        // Load and display single admin-set price (highest price only)
+        function loadPrices() {
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const adminPrices = JSON.parse(localStorage.getItem('adminPrices') || '{}');
+            
+            const products = [
+                { key: 'minikit', name: 'মিনিকিট' },
+                { key: 'kash', name: 'কাশ' },
+                { key: 'lalsonno', name: 'লালসোনা' }
+            ];
+            
+            const priceGrid = document.getElementById('priceGrid');
+            priceGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                // Get admin-set price for this product
+                const adminPrice = adminPrices[product.key] || 0;
+                
+                // Get the best company (highest actual price) for backend connection
+                const bestCompany = companies
+                    .map(company => ({
+                        id: company.id,
+                        name: company.name,
+                        actualPrice: company.prices[product.key] || 0
+                    }))
+                    .filter(company => company.actualPrice > 0)
+                    .sort((a, b) => b.actualPrice - a.actualPrice)[0]; // Get only the best company
+
+                const card = document.createElement('div');
+                card.className = 'price-card';
+
+                if (!bestCompany || adminPrice === 0) {
+                    card.innerHTML = `
+                        <div class="product-name">${product.name}</div>
+                        <div class="highest-price">৳০</div>
+                        <div class="price-label">বর্তমানে উপলব্ধ নয়</div>
+                        <button class="order-btn" disabled style="opacity: 0.5;">
+                            বর্তমানে উপলব্ধ নয়
+                        </button>
+                    `;
+                } else {
+                    // Show single admin-set price with best company connection
+                    card.innerHTML = `
+                        <div class="best-price-badge">সেরা দর</div>
+                        <div class="product-name">${product.name}</div>
+                        <div class="highest-price">৳${adminPrice}</div>
+                        <div class="price-label">
+                            🏆 সর্বোচ্চ গ্যারান্টিযুক্ত দর
+                        </div>
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 10px; margin: 1rem 0; border: 2px solid #4CAF50;">
+                            <div style="text-align: center;">
+                                <div style="font-weight: bold; color: #2e7d32; margin-bottom: 0.5rem;">
+                                    🏢 ${bestCompany.name}
+                                </div>
+                                <div style="font-size: 0.9rem; color: #666;">
+                                    সেরা কোম্পানির সাথে সংযুক্ত
+                                </div>
+                            </div>
+                        </div>
+                        <button class="order-btn" onclick="openOrderModal('${product.key}', '${product.name}', ${adminPrice}, '${bestCompany.name}', ${bestCompany.id})">
+                            ৳${adminPrice} দরে অর্ডার দিন
+                        </button>
+                    `;
+                }
+
+                priceGrid.appendChild(card);
+            });
+        }
+        
+        // Open order modal
+        function openOrderModal(productKey, productName, price, companyName, companyId) {
+            document.getElementById('orderProduct').value = productName;
+            document.getElementById('orderPrice').value = '৳' + price + ' (সর্বোচ্চ দর)';
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('orderDate').min = today;
+            document.getElementById('orderDate').value = today;
+            
+            // Store product data for order submission
+            window.currentOrderProduct = {
+                key: productKey,
+                name: productName,
+                price: price,
+                companyName: companyName,
+                companyId: companyId
+            };
+            
+            document.getElementById('orderModal').style.display = 'block';
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('orderModal').style.display = 'none';
+            // Restore body scroll when modal is closed
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Submit order
+        function submitOrder(event) {
+            event.preventDefault();
+            
+            const quantity = parseInt(document.getElementById('orderQuantity').value);
+            const date = document.getElementById('orderDate').value;
+            const time = document.getElementById('orderTime').value;
+            const location = document.getElementById('orderLocation').value;
+            
+            const order = {
+                id: Date.now(),
+                farmerId: currentFarmer.id,
+                farmerName: currentFarmer.name,
+                farmerPhone: currentFarmer.phone,
+                companyId: window.currentOrderProduct.companyId,
+                companyName: window.currentOrderProduct.companyName,
+                product: window.currentOrderProduct.key,
+                productName: window.currentOrderProduct.name,
+                quantity: quantity,
+                price: window.currentOrderProduct.price,
+                totalAmount: window.currentOrderProduct.price * quantity,
+                date: date,
+                time: time,
+                location: location,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+            
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            
+            alert('অর্ডার সফলভাবে জমা দেওয়া হয়েছে! সর্বোচ্চ দামে আপনার ফসল বিক্রি হবে।');
+            closeModal();
+            loadOrders();
+            
+            // Clear form
+            document.getElementById('orderQuantity').value = '';
+            document.getElementById('orderLocation').value = '';
+        }
+        
+        // Load farmer's orders
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const farmerOrders = orders.filter(order => order.farmerId === currentFarmer.id);
+            
+            const ordersList = document.getElementById('ordersList');
+            
+            if (farmerOrders.length === 0) {
+                ordersList.innerHTML = '<p>এখনো কোনো অর্ডার নেই।</p>';
+                return;
+            }
+            
+            ordersList.innerHTML = '';
+            
+            farmerOrders.reverse().forEach(order => {
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order-item';
+                
+                const statusClass = order.status === 'confirmed' ? 'status-confirmed' : 'status-pending';
+                const statusText = order.status === 'confirmed' ? 'নিশ্চিত' : 'অপেক্ষমাণ';
+                
+                orderDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4>অর্ডার #${order.id}</h4>
+                        <span class="order-status ${statusClass}">${statusText}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div><strong>পণ্য:</strong> ${order.productName}</div>
+                        <div><strong>কোম্পানি:</strong> ${order.companyName}</div>
+                        <div><strong>পরিমাণ:</strong> ${order.quantity} পিস</div>
+                        <div><strong>দর:</strong> ৳${order.price} (সর্বোচ্চ)</div>
+                        <div><strong>মোট:</strong> ৳${order.totalAmount}</div>
+                        <div><strong>তারিখ:</strong> ${order.date} ${order.time}</div>
+                        <div><strong>স্থান:</strong> ${order.location}</div>
+                    </div>
+                `;
+                
+                ordersList.appendChild(orderDiv);
+            });
+        }
+        
+        // Calculate and display stipend
+        function loadStipendInfo() {
+            const registrationDate = new Date(currentFarmer.registeredAt);
+            const now = new Date();
+            const monthsSinceRegistration = Math.floor((now - registrationDate) / (1000 * 60 * 60 * 24 * 30));
+            
+            const totalStipend = Math.max(0, monthsSinceRegistration * 500);
+            document.getElementById('totalStipend').textContent = '৳' + totalStipend;
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentFarmer');
+            window.location.href = 'index.html';
+        }
+        
+        // Initialize page
+        loadPrices();
+        loadOrders();
+        loadStipendInfo();
+        
+        // FIXED: Close modal when clicking outside, but ensure it works with new scrollable structure
+        window.onclick = function(event) {
+            const modal = document.getElementById('orderModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // FIXED: Handle escape key to close modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('orderModal');
+                if (modal.style.display === 'block') {
+                    closeModal();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

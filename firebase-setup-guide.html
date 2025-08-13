@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Setup Guide - KrishiSetu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .guide-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .guide-header {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .guide-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .guide-content {
+            padding: 2rem;
+        }
+        
+        .step {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .step h2 {
+            color: #FF6B35;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .step h3 {
+            color: #333;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        .step p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .step-number {
+            background: #FF6B35;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .step-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        ol, ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .back-link a {
+            color: #FF6B35;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="guide-header">
+            <h1>🔥 Firebase Setup Guide</h1>
+            <p>Complete guide to integrate Firebase with KrishiSetu Admin Dashboard</p>
+        </div>
+        
+        <div class="guide-content">
+            <!-- Step 1: Create Firebase Project -->
+            <div class="step">
+                <div class="step-title">
+                    <div class="step-number">1</div>
+                    <h2>Create Firebase Project</h2>
+                </div>
+                
+                <ol>
+                    <li>Go to <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a></li>
+                    <li>Click "Create a project" or "Add project"</li>
+                    <li>Enter project name: <strong>krishisetu-admin</strong></li>
+                    <li>Choose whether to enable Google Analytics (optional)</li>
+                    <li>Click "Create project"</li>
+                </ol>
+                
+                <div class="success">
+                    <strong>✅ Success:</strong> Your Firebase project is now created!
+                </div>
+            </div>
+
+            <!-- Step 2: Enable Firestore -->
+            <div class="step">
+                <div class="step-title">
+                    <div class="step-number">2</div>
+                    <h2>Enable Firestore Database</h2>
+                </div>
+                
+                <ol>
+                    <li>In your Firebase project console, click "Firestore Database" in the left sidebar</li>
+                    <li>Click "Create database"</li>
+                    <li>Choose "Start in test mode" (for development)</li>
+                    <li>Select a location for your database (choose closest to your users)</li>
+                    <li>Click "Done"</li>
+                </ol>
+                
+                <div class="warning">
+                    <strong>⚠️ Security Rules:</strong> Test mode allows read/write access to all users. For production, you'll need to configure proper security rules.
+                </div>
+            </div>
+
+            <!-- Step 3: Get Firebase Config -->
+            <div class="step">
+                <div class="step-title">
+                    <div class="step-number">3</div>
+                    <h2>Get Firebase Configuration</h2>
+                </div>
+                
+                <ol>
+                    <li>In your Firebase project console, click the gear icon ⚙️ and select "Project settings"</li>
+                    <li>Scroll down to "Your apps" section</li>
+                    <li>Click the web icon "&lt;/&gt;" to add a web app</li>
+                    <li>Enter app nickname: <strong>KrishiSetu Admin</strong></li>
+                    <li>Click "Register app"</li>
+                    <li>Copy the Firebase configuration object</li>
+                </ol>
+                
+                <h3>Your Firebase Config will look like this:</h3>
+                <div class="code-block">
+const firebaseConfig = {
+  apiKey: "AIzaSyC...",
+  authDomain: "krishisetu-admin.firebaseapp.com",
+  projectId: "krishisetu-admin",
+  storageBucket: "krishisetu-admin.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
+};
+                </div>
+            </div>
+
+            <!-- Step 4: Update HTML Files -->
+            <div class="step">
+                <div class="step-title">
+                    <div class="step-number">4</div>
+                    <h2>Update Firebase Configuration in HTML</h2>
+                </div>
+                
+                <p>Replace the placeholder Firebase config in <strong>admin-dashboard-firebase.html</strong>:</p>
+                
+                <div class="code-block">
+// Replace this section in admin-dashboard-firebase.html
+const firebaseConfig = {
+    apiKey: "your-api-key-here",           // ← Replace with your actual API key
+    authDomain: "your-project-id.firebaseapp.com",  // ← Replace with your domain
+    projectId: "your-project-id",         // ← Replace with your project ID
+    storageBucket: "your-project-id.appspot.com",   // ← Replace with your storage bucket
+    messagingSenderId: "123456789",       // ← Replace with your sender ID
+    appId: "your-app-id"                  // ← Replace with your app ID
+};
+                </div>
+                
+                <div class="warning">
+                    <strong>⚠️ Important:</strong> Make sure to replace ALL placeholder values with your actual Firebase configuration values.
+                </div>
+            </div>
+
+            <!-- Step 5: Set up Firestore Collections -->
+            <div class="step">
+                <div class="step-title">
+                    <div class="step-number">5</div>
+                    <h2>Set up Firestore Collections</h2>
+                </div>
+                
+                <p>The admin dashboard will automatically create these collections when you add data:</p>
+                
+                <ul>
+                    <li><strong>farmers</strong> - Store farmer information</li>
+                    <li><strong>companies</strong> - Store company information</li>
+                    <li><strong>orders</strong> - Store order information</li>
+                    <li><strong>payments</strong> - Store payment records</li>
+                    <li><strong>adminPrices</strong> - Store admin-set prices</li>
+                </ul>
+                
+                <h3>Sample Document Structure:</h3>
+                
+                <h4>Farmers Collection:</h4>
+                <div class="code-block">
+{
+  "name": "রহিম উদ্দিন",
+  "phone": "01711111111",
+  "email": "rahim@example.com",
+  "location": "ঢাকা",
+  "bank": "1234567890",
+  "ifsc": "SBIN0001234",
+  "registeredAt": "2024-01-15T10:30:00.000Z"
+}
+                </div>
+                
+                <h4>Companies Collection:</h4>
+                <div class="code-block">
+{
+  "name": "গ্রীন হার্ভেস্ট কোম্পানি",
+  "owner": "করিম আহমেদ",
+  "location": "চট্টগ্রাম",
+  "email": "green@harvest.com",
+  "phone": "01722222222",
+  "bank": "0987654321",
+  "subscription": "active",
+  "subscriptionExpiry": "2024-02-15T10:30:00.000Z",
+  "prices": {
+    "minikit": 1500,
+    "kash": 3000,
+    "lalsonno": 1350
+  },
+  "registeredAt": "2024-01-10T08:15:00.000Z"
+}
+                </div>
+            </div>
+
+            <!-- Step 6: Security Rules -->
+            <div class="step">
+                <div class="step-title">
+                    <div class="step-number">6</div>
+                    <h2>Configure Security Rules (Production)</h2>
+                </div>
+                
+                <p>For production, update your Firestore security rules:</p>
+                
+                <ol>
+                    <li>Go to Firestore Database in Firebase Console</li>
+                    <li>Click on "Rules" tab</li>
+                    <li>Replace the default rules with:</li>
+                </ol>
+                
+                <div class="code-block">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow read/write access to admin users only
+    match /{document=**} {
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Allow farmers to read their own data
+    match /farmers/{farmerId} {
+      allow read: if request.auth != null && request.auth.uid == farmerId;
+    }
+    
+    // Allow companies to read their own data
+    match /companies/{companyId} {
+      allow read: if request.auth != null && request.auth.uid == companyId;
+    }
+  }
+}
+                </div>
+                
+                <div class="warning">
+                    <strong>⚠️ Note:</strong> These rules require Firebase Authentication. For now, keep test mode enabled during development.
+                </div>
+            </div>
+
+            <!-- Step 7: Test the Integration -->
+            <div class="step">
+                <div class="step-title">
+                    <div class="step-number">7</div>
+                    <h2>Test Firebase Integration</h2>
+                </div>
+                
+                <ol>
+                    <li>Open <strong>admin-dashboard-firebase.html</strong> in your browser</li>
+                    <li>Login with admin credentials (krishi1 / 1234)</li>
+                    <li>Check if you see "Firebase Connected" indicator</li>
+                    <li>Try adding a new farmer or company</li>
+                    <li>Check your Firebase Console to see if data appears in Firestore</li>
+                </ol>
+                
+                <div class="success">
+                    <strong>✅ Success Indicators:</strong>
+                    <ul>
+                        <li>Firebase connection status shows "Connected"</li>
+                        <li>Data appears in Firebase Console → Firestore Database</li>
+                        <li>Real-time updates work (data syncs automatically)</li>
+                        <li>No console errors in browser developer tools</li>
+                    </ul>
+                </div>
+                
+                <div class="warning">
+                    <strong>🔧 Troubleshooting:</strong>
+                    <ul>
+                        <li>If connection fails, check your Firebase config values</li>
+                        <li>Ensure Firestore is enabled in your Firebase project</li>
+                        <li>Check browser console for error messages</li>
+                        <li>Verify your project ID matches in the config</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 8: Features Overview -->
+            <div class="step">
+                <div class="step-title">
+                    <div class="step-number">8</div>
+                    <h2>Firebase Integration Features</h2>
+                </div>
+                
+                <h3>✨ What's Included:</h3>
+                <ul>
+                    <li><strong>Real-time Data Sync:</strong> Changes appear instantly across all connected devices</li>
+                    <li><strong>Cloud Storage:</strong> All data stored securely in Google's cloud infrastructure</li>
+                    <li><strong>Automatic Backup:</strong> Firebase handles data backup and recovery</li>
+                    <li><strong>Scalability:</strong> Handles growing data without performance issues</li>
+                    <li><strong>Cross-platform:</strong> Data accessible from web, mobile, and desktop apps</li>
+                </ul>
+                
+                <h3>🚀 Admin Dashboard Capabilities:</h3>
+                <ul>
+                    <li>Add/Edit/Delete farmers and companies</li>
+                    <li>View real-time order updates</li>
+                    <li>Monitor system statistics</li>
+                    <li>Manage payments and transactions</li>
+                    <li>Set admin prices for products</li>
+                </ul>
+                
+                <div class="success">
+                    <strong>🎉 Congratulations!</strong> Your KrishiSetu admin dashboard is now powered by Firebase with real-time data synchronization!
+                </div>
+            </div>
+
+            <!-- Step 9: Next Steps -->
+            <div class="step">
+                <div class="step-title">
+                    <div class="step-number">9</div>
+                    <h2>Next Steps & Enhancements</h2>
+                </div>
+                
+                <h3>🔐 Security Enhancements:</h3>
+                <ul>
+                    <li>Implement Firebase Authentication for admin users</li>
+                    <li>Set up proper Firestore security rules</li>
+                    <li>Add role-based access control</li>
+                </ul>
+                
+                <h3>📱 Mobile Integration:</h3>
+                <ul>
+                    <li>Create mobile apps for farmers and companies</li>
+                    <li>Use same Firebase project for cross-platform sync</li>
+                    <li>Implement push notifications</li>
+                </ul>
+                
+                <h3>📊 Analytics & Reporting:</h3>
+                <ul>
+                    <li>Add Firebase Analytics for usage tracking</li>
+                    <li>Create detailed reports and dashboards</li>
+                    <li>Monitor system performance</li>
+                </ul>
+                
+                <h3>🔄 Advanced Features:</h3>
+                <ul>
+                    <li>Implement offline support with Firebase caching</li>
+                    <li>Add file upload capabilities with Firebase Storage</li>
+                    <li>Create automated workflows with Firebase Functions</li>
+                </ul>
+            </div>
+            
+            <div class="back-link">
+                <a href="admin-dashboard-firebase.html">← Go to Firebase Admin Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

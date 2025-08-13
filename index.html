@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="bn">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কৃষিসেতু - কৃষক ও কোম্পানির সরাসরি সংযোগ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Bengali', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        
+        .nav-menu a:hover {
+            color: #4CAF50;
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .language-switcher {
+            display: flex;
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 0.25rem;
+        }
+        
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .lang-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .join-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .join-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        /* Employee Portal Button */
+        .employee-btn {
+            background: #FF9800;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 1rem;
+        }
+        
+        .employee-btn:hover {
+            background: #F57C00;
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://static.vecteezy.com/system/resources/thumbnails/053/471/482/small_2x/on-the-morning-with-golden-sunlight-in-the-rice-fields-in-rural-thailand-farmers-and-their-lifestyle-of-rice-farming-based-on-the-seasons-photo.jpg') center/cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        /* Sections */
+        .section {
+            padding: 5rem 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+        
+        /* About Section */
+        .about {
+            background: #f8f9fa;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #4CAF50;
+        }
+        
+        .about-text p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+        
+        .about-image {
+            text-align: center;
+        }
+        
+        .about-image img {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* How it Works Section */
+        .how-it-works {
+            background: #f8f9fa;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+        
+        .step h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .step p {
+            color: #666;
+        }
+        
+        /* Stats Section */
+        .stats {
+            background: #4CAF50;
+            color: white;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .stat-item h3 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #4CAF50;
+        }
+        
+        .footer-section p,
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            line-height: 1.8;
+        }
+        
+        .footer-section a:hover {
+            color: #4CAF50;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #555;
+            color: #999;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-right {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+        
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Section visibility */
+        .section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Language content */
+        .lang-content {
+            display: none;
+        }
+        
+        .lang-content.active {
+            display: inline;
+        }
+
+        /* Ensure proper inline display for language content */
+        .lang-content.active {
+            display: inline !important;
+        }
+    </style>
+</head>
+<body>
+      
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#home" class="logo">🌾 <span class="lang-content active" data-lang="bn">কৃষিসেতু</span><span class="lang-content" data-lang="en">KrishiSetu</span></a>
+            <ul class="nav-menu">
+                <li><a href="#home"><span class="lang-content active" data-lang="bn">হোম</span><span class="lang-content" data-lang="en">Home</span></a></li>
+                <li><a href="#about"><span class="lang-content active" data-lang="bn">আমাদের সম্পর্কে</span><span class="lang-content" data-lang="en">About</span></a></li>
+                <li><a href="#how-it-works"><span class="lang-content active" data-lang="bn">কিভাবে কাজ করে</span><span class="lang-content" data-lang="en">How it Works</span></a></li>
+                <li><a href="#help"><span class="lang-content active" data-lang="bn">সাহায্য</span><span class="lang-content" data-lang="en">Help</span></a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="language-switcher">
+                    <button class="lang-btn active" onclick="changeLanguage('bn')">বাং</button>
+                    <button class="lang-btn" onclick="changeLanguage('en')">EN</button>
+                </div>
+                 
+                <a href="employee-login.html" class="employee-btn">
+                    <span class="lang-content active" data-lang="bn">👨‍💼 কর্মচারী পোর্টাল</span>
+                    <span class="lang-content" data-lang="en">👨‍💼 Employee Portal</span>
+                </a>
+                <a href="login-selection.html" class="join-btn">
+                    <span class="lang-content active" data-lang="bn">কৃষিসেতুতে যোগ দিন</span>
+                    <span class="lang-content" data-lang="en">Join KrishiSetu</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+      
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>
+                <span class="lang-content active" data-lang="bn">কৃষিসেতু</span>
+                <span class="lang-content" data-lang="en">KrishiSetu</span>
+            </h1>
+            <p>
+                <span class="lang-content active" data-lang="bn">কৃষক ও কোম্পানির সরাসরি সংযোগ - মধ্যস্বত্বভোগী ছাড়াই সেরা দামে ফসল বিক্রি করুন</span>
+                <span class="lang-content" data-lang="en">Direct connection between farmers and companies - Sell crops at best prices without middlemen</span>
+            </p>
+            <div class="cta-buttons">
+                <a href="login-selection.html" class="cta-btn cta-primary">
+                    <span class="lang-content active" data-lang="bn">এখনই শুরু করুন</span>
+                    <span class="lang-content" data-lang="en">Get Started Now</span>
+                </a>
+                <a href="#how-it-works" class="cta-btn cta-secondary">
+                    <span class="lang-content active" data-lang="bn">কিভাবে কাজ করে</span>
+                    <span class="lang-content" data-lang="en">How it Works</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+     
+    <section id="about" class="section about">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="lang-content active" data-lang="bn">আমাদের সম্পর্কে</span>
+                <span class="lang-content" data-lang="en">About Us</span>
+            </h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">কৃষকদের ক্ষমতায়নে আমাদের অঙ্গীকার</span>
+                        <span class="lang-content" data-lang="en">Our Commitment to Farmer Empowerment</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">কৃষিসেতু একটি বিপ্লবী ডিজিটাল প্ল্যাটফর্ম যা কৃষক ও কোম্পানির মধ্যে সরাসরি সংযোগ স্থাপন করে। আমাদের লক্ষ্য হলো মধ্যস্বত্বভোগীদের দৌরাত্ম্য কমিয়ে কৃষকদের ন্যায্য দাম নিশ্চিত করা।</span>
+                        <span class="lang-content" data-lang="en">KrishiSetu is a revolutionary digital platform that establishes direct connections between farmers and companies. Our goal is to ensure fair prices for farmers by reducing middleman exploitation.</span>
+                    </p>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">আমরা বিশ্বাস করি যে প্রযুক্তির সঠিক ব্যবহারের মাধ্যমে কৃষি ক্ষেত্রে একটি ইতিবাচক পরিবর্তন আনা সম্ভব। আমাদের প্ল্যাটফর্মে কৃষকরা বিনামূল্যে তাদের ফসলের সেরা দাম খুঁজে পেতে পারেন।</span>
+                        <span class="lang-content" data-lang="en">We believe that positive change in agriculture is possible through proper use of technology. On our platform, farmers can find the best prices for their crops for free.</span>
+                    </p>
+                </div>
+                <div class="about-image">
+                    <img src="https://thumbs.dreamstime.com/b/happy-family-farmer-agricultural-field-indian-203865504.jpg" alt="কৃষকদের আলোচনা">
+                </div>
+            </div>
+        </div>
+    </section>
+
+     
+    <section class="section features">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="lang-content active" data-lang="bn">আমাদের বিশেষত্ব</span>
+                <span class="lang-content" data-lang="en">Our Features</span>
+            </h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🆓</div>
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">কৃষকদের জন্য সম্পূর্ণ বিনামূল্যে</span>
+                        <span class="lang-content" data-lang="en">Completely Free for Farmers</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">কৃষকরা কোনো রকম ফি ছাড়াই আমাদের সব সেবা ব্যবহার করতে পারবেন। আমাদের লক্ষ্য কৃষকদের সহায়তা করা।</span>
+                        <span class="lang-content" data-lang="en">Farmers can use all our services without any fees. Our goal is to help farmers.</span>
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">সেরা দামের গ্যারান্টি</span>
+                        <span class="lang-content" data-lang="en">Best Price Guarantee</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">একাধিক কোম্পানির দাম তুলনা করে সেরা দামে আপনার ফসল বিক্রি করুন। স্বচ্ছ ও ন্যায্য মূল্য নিশ্চিত।</span>
+                        <span class="lang-content" data-lang="en">Compare prices from multiple companies and sell your crops at the best price. Transparent and fair pricing guaranteed.</span>
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">সরাসরি যোগাযোগ</span>
+                        <span class="lang-content" data-lang="en">Direct Communication</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">মধ্যস্বত্বভোগী ছাড়াই কোম্পানির সাথে সরাসরি লেনদেন করুন। নিরাপদ ও বিশ্বস্ত ব্যবস্থা।</span>
+                        <span class="lang-content" data-lang="en">Deal directly with companies without middlemen. Safe and trusted system.</span>
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">স্টাইপেন সুবিধা</span>
+                        <span class="lang-content" data-lang="en">Stypen Benefits</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">নিবন্ধনের পর প্রতি মাসে ৫০০ টাকা স্টাইপেন পাবেন। আপনার আয় বৃদ্ধির অতিরিক্ত সুযোগ।</span>
+                        <span class="lang-content" data-lang="en">Get ৳500 monthly stipend after registration. Additional opportunity to increase your income.</span>
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">ঘরে বসে বিক্রি</span>
+                        <span class="lang-content" data-lang="en">Sell from Home</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">আপনার নির্ধারিত স্থান ও সময়ে কোম্পানি এসে ফসল সংগ্রহ করবে। কোনো ঝামেলা নেই।</span>
+                        <span class="lang-content" data-lang="en">Companies will come to collect crops at your designated place and time. No hassle.</span>
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">নিরাপদ লেনদেন</span>
+                        <span class="lang-content" data-lang="en">Secure Transactions</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">সব লেনদেন সুরক্ষিত ও স্বচ্ছ। আপনার ব্যাংক অ্যাকাউন্টে সরাসরি টাকা পৌঁছাবে।</span>
+                        <span class="lang-content" data-lang="en">All transactions are secure and transparent. Money will reach your bank account directly.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     
+    <section id="how-it-works" class="section how-it-works">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="lang-content active" data-lang="bn">কিভাবে কাজ করে</span>
+                <span class="lang-content" data-lang="en">How it Works</span>
+            </h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">১</div>
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">নিবন্ধন করুন</span>
+                        <span class="lang-content" data-lang="en">Register</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">বিনামূল্যে কৃষক হিসেবে নিবন্ধন করুন। শুধু নাম, ফোন নম্বর ও ব্যাংক তথ্য দিন।</span>
+                        <span class="lang-content" data-lang="en">Register as a farmer for free. Just provide name, phone number and bank details.</span>
+                    </p>
+                </div>
+                <div class="step">
+                    <div class="step-number">২</div>
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">দাম তুলনা করুন</span>
+                        <span class="lang-content" data-lang="en">Compare Prices</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">আপনার এলাকার সব কোম্পানির দাম দেখুন। সেরা দাম বেছে নিন।</span>
+                        <span class="lang-content" data-lang="en">See prices from all companies in your area. Choose the best price.</span>
+                    </p>
+                </div>
+                <div class="step">
+                    <div class="step-number">৩</div>
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">অর্ডার দিন</span>
+                        <span class="lang-content" data-lang="en">Place Order</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">পছন্দের কোম্পানি, পরিমাণ, তারিখ ও স্থান নির্ধারণ করে অর্ডার দিন।</span>
+                        <span class="lang-content" data-lang="en">Place order by selecting preferred company, quantity, date and location.</span>
+                    </p>
+                </div>
+                <div class="step">
+                    <div class="step-number">৪</div>
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">ফসল বিক্রি করুন</span>
+                        <span class="lang-content" data-lang="en">Sell Crops</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">নির্ধারিত সময়ে কোম্পানি এসে ফসল নিয়ে যাবে এবং টাকা দিয়ে দেবে।</span>
+                        <span class="lang-content" data-lang="en">Company will come at scheduled time to collect crops and make payment.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     
+    <section class="section stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3 id="farmerCount">১০০০+</h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">সন্তুষ্ট কৃষক</span>
+                        <span class="lang-content" data-lang="en">Satisfied Farmers</span>
+                    </p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="companyCount">৫০+</h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">নিবন্ধিত কোম্পানি</span>
+                        <span class="lang-content" data-lang="en">Registered Companies</span>
+                    </p>
+                </div>
+                <div class="stat-item">
+                    <h3 id="orderCount">৫০০০+</h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">সফল লেনদেন</span>
+                        <span class="lang-content" data-lang="en">Successful Transactions</span>
+                    </p>
+                </div>
+                <div class="stat-item">
+                    <h3>১০০%</h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">কৃষকদের জন্য বিনামূল্যে</span>
+                        <span class="lang-content" data-lang="en">Free for Farmers</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     
+    <section id="help" class="section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="lang-content active" data-lang="bn">সাহায্য ও যোগাযোগ</span>
+                <span class="lang-content" data-lang="en">Help & Contact</span>
+            </h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">আমাদের সাথে যোগাযোগ করুন</span>
+                        <span class="lang-content" data-lang="en">Contact Us</span>
+                    </h3>
+                    <p><strong>
+                        <span class="lang-content active" data-lang="bn">ফোন:</span>
+                        <span class="lang-content" data-lang="en">Phone:</span>
+                    </strong> ০১৭১১-১২৩৪৫৬</p>
+                    <p><strong>
+                        <span class="lang-content active" data-lang="bn">ইমেইল:</span>
+                        <span class="lang-content" data-lang="en">Email:</span>
+                    </strong> help@krishisetu.com</p>
+                    <p><strong>
+                        <span class="lang-content active" data-lang="bn">ঠিকানা:</span>
+                        <span class="lang-content" data-lang="en">Address:</span>
+                    </strong> 
+                        <span class="lang-content active" data-lang="bn">বাঁকুড়া, পশ্চিমবঙ্গ</span>
+                        <span class="lang-content" data-lang="en">Bankura, West Bengal</span>
+                    </p>
+                    <br>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">আমাদের সাপোর্ট টিম ২৪/৭ আপনার সেবায় নিয়োজিত। যেকোনো সমস্যা বা প্রশ্নের জন্য আমাদের সাথে যোগাযোগ করুন।</span>
+                        <span class="lang-content" data-lang="en">Our support team is available 24/7 to serve you. Contact us for any problems or questions.</span>
+                    </p>
+                </div>
+                <div class="about-image">
+                    <img src="https://media.licdn.com/dms/image/v2/C4E12AQF_GoWxIAvCQw/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1536769832417?e=2147483647&v=beta&t=bad6VFWtiA9Qbv855oaqv1Y5xui_rJKrGHJdspuVOAw" alt="সাহায্য টিম">
+                </div>
+            </div>
+        </div>
+    </section>
+
+      
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">কৃষিসেতু</span>
+                        <span class="lang-content" data-lang="en">KrishiSetu</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">কৃষক ও কোম্পানির সরাসরি সংযোগ স্থাপনকারী বাংলাদেশের প্রথম ডিজিটাল প্ল্যাটফর্ম।</span>
+                        <span class="lang-content" data-lang="en">Bangladesh's first digital platform connecting farmers and companies directly.</span>
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">দ্রুত লিংক</span>
+                        <span class="lang-content" data-lang="en">Quick Links</span>
+                    </h3>
+                    <p><a href="#home">
+                        <span class="lang-content active" data-lang="bn">হোম</span>
+                        <span class="lang-content" data-lang="en">Home</span>
+                    </a></p>
+                    <p><a href="#about">
+                        <span class="lang-content active" data-lang="bn">আমাদের সম্পর্কে</span>
+                        <span class="lang-content" data-lang="en">About</span>
+                    </a></p>
+                    <p><a href="#how-it-works">
+                        <span class="lang-content active" data-lang="bn">কিভাবে কাজ করে</span>
+                        <span class="lang-content" data-lang="en">How it Works</span>
+                    </a></p>
+                    <p><a href="login-selection.html">
+                        <span class="lang-content active" data-lang="bn">যোগ দিন</span>
+                        <span class="lang-content" data-lang="en">Join</span>
+                    </a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>
+                        <span class="lang-content active" data-lang="bn">যোগাযোগ</span>
+                        <span class="lang-content" data-lang="en">Contact</span>
+                    </h3>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">ফোন: ০১৭১১-১২৩৪৫৬</span>
+                        <span class="lang-content" data-lang="en">Phone: 01711-123456</span>
+                    </p>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">ইমেইল: info@krishisetu.com</span>
+                        <span class="lang-content" data-lang="en">Email: info@krishisetu.com</span>
+                    </p>
+                    <p>
+                        <span class="lang-content active" data-lang="bn">ঠিকানা: বাঁকুড়া, পশ্চিমবঙ্গ</span>
+                        <span class="lang-content" data-lang="en">Address: Bankura, West Bengal</span>
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>
+                    <span class="lang-content active" data-lang="bn">&copy; ২০২ৄ কৃষিসেতু। সকল অধিকার সংরক্ষিত।</span>
+                    <span class="lang-content" data-lang="en">&copy; 2024 KrishiSetu. All rights reserved.</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Language switching functionality
+        let currentLanguage = 'bn';
+        
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update active language button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide content based on language
+            document.querySelectorAll('.lang-content').forEach(content => {
+                content.classList.remove('active');
+                if (content.getAttribute('data-lang') === lang) {
+                    content.classList.add('active');
+                }
+            });
+            
+            // Store language preference
+            localStorage.setItem('preferred_language', lang);
+        }
+        
+        // Load saved language preference
+        function loadLanguagePreference() {
+            const savedLang = localStorage.getItem('preferred_language');
+            if (savedLang && savedLang !== 'bn') {
+                // Simulate click event for proper language switching
+                const langButton = document.querySelector(`.lang-btn[onclick="changeLanguage('${savedLang}')"]`);
+                if (langButton) {
+                    langButton.click();
+                }
+            }
+        }
+        
+        // Initialize sample data if not exists
+        if (!localStorage.getItem('krishisetu_initialized')) {
+            const sampleCompanies = [
+                {
+                    id: 1,
+                    name: "গ্রীন হার্ভেস্ট কোম্পানি",
+                    owner: "রহিম উদ্দিন",
+                    location: "ঢাকা",
+                    email: "green@harvest.com",
+                    phone: "01711111111",
+                    bank: "1234567890",
+                    subscription: "active",
+                    subscriptionExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+                    trialUsed: true,
+                    prices: {
+                        minikit: 1500,
+                        kash: 3000,
+                        lalsonno: 1350
+                    },
+                    registeredAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString() // 15 days ago
+                },
+                {
+                    id: 2,
+                    name: "বাংলা এগ্রো লিমিটেড",
+                    owner: "করিম আহমেদ",
+                    location: "চট্টগ্রাম",
+                    email: "bangla@agro.com",
+                    phone: "01722222222",
+                    bank: "0987654321",
+                    subscription: "trial",
+                    subscriptionExpiry: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days from now
+                    trialUsed: false,
+                    prices: {
+                        minikit: 1600,
+                        kash: 3200,
+                        lalsonno: 1400
+                    },
+                    registeredAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
+                },
+                {
+                    id: 3,
+                    name: "ফার্ম ফ্রেশ কর্পোরেশন",
+                    owner: "আব্দুল হক",
+                    location: "সিলেট",
+                    email: "farmfresh@corp.com",
+                    phone: "01733333333",
+                    bank: "1122334455",
+                    subscription: "active",
+                    subscriptionExpiry: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+                    trialUsed: true,
+                    prices: {
+                        minikit: 1550,
+                        kash: 3100,
+                        lalsonno: 1375
+                    },
+                    registeredAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    id: 4,
+                    name: "নেচার হার্ভেস্ট",
+                    owner: "মোহাম্মদ আলী",
+                    location: "রাজশাহী",
+                    email: "nature@harvest.com",
+                    phone: "01744444444",
+                    bank: "2233445566",
+                    subscription: "active",
+                    subscriptionExpiry: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+                    trialUsed: true,
+                    prices: {
+                        minikit: 1650,
+                        kash: 3250,
+                        lalsonno: 1425
+                    },
+                    registeredAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    id: 5,
+                    name: "অর্গানিক ফার্মস",
+                    owner: "ফারুক হোসেন",
+                    location: "খুলনা",
+                    email: "organic@farms.com",
+                    phone: "01755555555",
+                    bank: "3344556677",
+                    subscription: "active",
+                    subscriptionExpiry: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
+                    trialUsed: true,
+                    prices: {
+                        minikit: 1580,
+                        kash: 3150,
+                        lalsonno: 1390
+                    },
+                    registeredAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    id: 6,
+                    name: "গোল্ডেন হার্ভেস্ট",
+                    owner: "নাসির উদ্দিন",
+                    location: "বরিশাল",
+                    email: "golden@harvest.com",
+                    phone: "01766666666",
+                    bank: "4455667788",
+                    subscription: "active",
+                    subscriptionExpiry: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000).toISOString(),
+                    trialUsed: true,
+                    prices: {
+                        minikit: 1620,
+                        kash: 3220,
+                        lalsonno: 1410
+                    },
+                    registeredAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    id: 7,
+                    name: "প্রিমিয়াম এগ্রো",
+                    owner: "জাহিদ হাসান",
+                    location: "রংপুর",
+                    email: "premium@agro.com",
+                    phone: "01777777777",
+                    bank: "5566778899",
+                    subscription: "active",
+                    subscriptionExpiry: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000).toISOString(),
+                    trialUsed: true,
+                    prices: {
+                        minikit: 1700,
+                        kash: 3300,
+                        lalsonno: 1450
+                    },
+                    registeredAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    id: 8,
+                    name: "সুপার ফার্মস",
+                    owner: "আনোয়ার হোসেন",
+                    location: "ময়মনসিংহ",
+                    email: "super@farms.com",
+                    phone: "01788888888",
+                    bank: "6677889900",
+                    subscription: "active",
+                    subscriptionExpiry: new Date(Date.now() + 50 * 24 * 60 * 60 * 1000).toISOString(),
+                    trialUsed: true,
+                    prices: {
+                        minikit: 1680,
+                        kash: 3280,
+                        lalsonno: 1435
+                    },
+                    registeredAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    id: 9,
+                    name: "ইকো হার্ভেস্ট",
+                    owner: "মাহবুব আলম",
+                    location: "কুমিল্লা",
+                    email: "eco@harvest.com",
+                    phone: "01799999999",
+                    bank: "7788990011",
+                    subscription: "active",
+                    subscriptionExpiry: new Date(Date.now() + 55 * 24 * 60 * 60 * 1000).toISOString(),
+                    trialUsed: true,
+                    prices: {
+                        minikit: 1590,
+                        kash: 3180,
+                        lalsonno: 1395
+                    },
+                    registeredAt: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    id: 10,
+                    name: "ফ্রেশ ভ্যালি",
+                    owner: "সাইফুল ইসলাম",
+                    location: "নোয়াখালী",
+                    email: "fresh@valley.com",
+                    phone: "01700000000",
+                    bank: "8899001122",
+                    subscription: "active",
+                    subscriptionExpiry: new Date(Date.now() + 65 * 24 * 60 * 60 * 1000).toISOString(),
+                    trialUsed: true,
+                    prices: {
+                        minikit: 1640,
+                        kash: 3240,
+                        lalsonno: 1420
+                    },
+                    registeredAt: new Date(Date.now() - 22 * 24 * 60 * 60 * 1000).toISOString()
+                }
+            ];
+            
+            // Initialize employee data with correct ID/password combinations
+            const employees = [
+                { id: 1001, password: 'ausnara', location: 'ausnara' },
+                { id: 1002, password: 'indus', location: 'indus' },
+                { id: 1003, password: 'saspur', location: 'saspur' },
+                { id: 1004, password: 'narayanpur', location: 'narayanpur' },
+                { id: 1005, password: 'kharrah', location: 'kharrah' },
+                { id: 1006, password: 'birasimul', location: 'birasimul' },
+                { id: 1007, password: 'mohespur', location: 'mohespur' },
+                { id: 1008, password: 'aswinpur', location: 'aswinpur' },
+                { id: 1009, password: 'kumrul', location: 'kumrul' },
+                { id: 1010, password: 'rosulpur', location: 'rosulpur' }
+            ];
+            
+            localStorage.setItem('companies', JSON.stringify(sampleCompanies));
+            localStorage.setItem('farmers', JSON.stringify([]));
+            localStorage.setItem('orders', JSON.stringify([]));
+            localStorage.setItem('employees', JSON.stringify(employees));
+            localStorage.setItem('adminPrices', JSON.stringify({
+                minikit: 1550,
+                kash: 3100,
+                lalsonno: 1375
+            }));
+            localStorage.setItem('krishisetu_initialized', 'true');
+        }
+
+        // Update stats with real data
+        function updateStats() {
+            const farmers = JSON.parse(localStorage.getItem('farmers') || '[]');
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            document.getElementById('farmerCount').textContent = farmers.length + '+';
+            document.getElementById('companyCount').textContent = companies.length + '+';
+            document.getElementById('orderCount').textContent = orders.length + '+';
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animate sections on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Initialize
+        loadLanguagePreference();
+        updateStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow read and write access for all users during development
+    // TODO: Implement proper authentication and authorization rules for production
+    match /{document=**} {
+      allow read, write: if true;
+    }
+    
+    // Example production rules (commented out for development):
+    /*
+    // Admin-only access to all collections
+    match /{document=**} {
+      allow read, write: if request.auth != null && 
+        request.auth.token.admin == true;
+    }
+    
+    // Farmers can read their own data
+    match /farmers/{farmerId} {
+      allow read: if request.auth != null && 
+        request.auth.uid == farmerId;
+    }
+    
+    // Companies can read their own data
+    match /companies/{companyId} {
+      allow read: if request.auth != null && 
+        request.auth.uid == companyId;
+    }
+    
+    // Orders can be read by related farmer or company
+    match /orders/{orderId} {
+      allow read: if request.auth != null && 
+        (request.auth.uid == resource.data.farmerId || 
+         request.auth.uid == resource.data.companyId);
+    }
+    */
+  }
+}

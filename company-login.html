@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কোম্পানি লগইন - কৃষিসেতু</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Bengali', Arial, sans-serif;
+            background: linear-gradient(135deg, #2196F3, #64B5F6), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCM6dxulXT-wl8HnXGVaPnDu7-icmIh7zByQ&s');
+            background-blend-mode: overlay;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            color: #2196F3;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .tab:not(.active) {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        
+        .btn:hover {
+            background: #1976D2;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #666;
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: inline-block;
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .back-link a:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .success {
+            color: green;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .subscription-info {
+            background: #e3f2fd;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .subscription-info h4 {
+            color: #1976D2;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Language Switcher Styles */
+        .language-switcher {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .language-switcher button {
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin: 0 0.25rem;
+        }
+
+        .language-switcher button:hover {
+            background-color: #ddd;
+        }
+
+        .language-switcher button.active {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .lang-content {
+            display: none;
+        }
+
+        .lang-content.active {
+            display: inline !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo"><span class="lang-content active" data-lang="bn">🏢 কোম্পানি প্যানেল</span><span class="lang-content" data-lang="en">🏢 Company Panel</span></div>
+        </div>
+
+        <div class="language-switcher">
+            <button onclick="changeLanguage('bn')" class="active">বাংলা</button>
+            <button onclick="changeLanguage('en')">English</button>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showLogin()"><span class="lang-content active" data-lang="bn">লগইন</span><span class="lang-content" data-lang="en">Login</span></button>
+            <button class="tab" onclick="showRegister()"><span class="lang-content active" data-lang="bn">নিবন্ধন</span><span class="lang-content" data-lang="en">Register</span></button>
+        </div>
+        
+        <!-- Login Form -->
+        <div id="loginForm">
+            <form onsubmit="companyLogin(event)">
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">ইমেইল:</span><span class="lang-content" data-lang="en">Email:</span></label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">ফোন নম্বর:</span><span class="lang-content" data-lang="en">Phone Number:</span></label>
+                    <input type="tel" id="loginPhone" required>
+                </div>
+                <button type="submit" class="btn"><span class="lang-content active" data-lang="bn">লগইন করুন</span><span class="lang-content" data-lang="en">Login</span></button>
+                <div id="loginError" class="error"></div>
+            </form>
+        </div>
+        
+        <!-- Registration Form -->
+        <div id="registerForm" class="hidden">
+            <div class="subscription-info">
+                <h4><span class="lang-content active" data-lang="bn">💰 সাবস্ক্রিপশন প্ল্যান:</span><span class="lang-content" data-lang="en">💰 Subscription Plan:</span></h4>
+                <ul>
+                    <li><span class="lang-content active" data-lang="bn">১ মাস: ৳৯৯৯</span><span class="lang-content" data-lang="en">1 Month: ৳999</span></li>
+                    <li><span class="lang-content active" data-lang="bn">৩ মাস: ৳২৪৯৯</span><span class="lang-content" data-lang="en">3 Months: ৳2499</span></li>
+                    <li><span class="lang-content active" data-lang="bn">১ বছর: ৳৯৯৯৯</span><span class="lang-content" data-lang="en">1 Year: ৳9999</span></li>
+                </ul>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
+                    <span class="lang-content active" data-lang="bn">নিবন্ধনের পর আপনি ৭ দিনের ফ্রি ট্রায়াল পাবেন</span>
+                    <span class="lang-content" data-lang="en">You'll get a 7-day free trial after registration</span>
+                </p>
+            </div>
+            
+            <form onsubmit="companyRegister(event)">
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">কোম্পানির নাম:</span><span class="lang-content" data-lang="en">Company Name:</span></label>
+                    <input type="text" id="regCompanyName" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">মালিকের নাম:</span><span class="lang-content" data-lang="en">Owner's Name:</span></label>
+                    <input type="text" id="regOwnerName" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">এলাকা:</span><span class="lang-content" data-lang="en">Location:</span></label>
+                    <input type="text" id="regLocation" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">ইমেইল:</span><span class="lang-content" data-lang="en">Email:</span></label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">ফোন নম্বর:</span><span class="lang-content" data-lang="en">Phone Number:</span></label>
+                    <input type="tel" id="regPhone" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">ব্যাংক অ্যাকাউন্ট নম্বর:</span><span class="lang-content" data-lang="en">Bank Account Number:</span></label>
+                    <input type="text" id="regBank" required>
+                </div>
+                <button type="submit" class="btn"><span class="lang-content active" data-lang="bn">নিবন্ধন করুন</span><span class="lang-content" data-lang="en">Register</span></button>
+                <div id="registerError" class="error"></div>
+                <div id="registerSuccess" class="success"></div>
+            </form>
+        </div>
+        
+        <div class="back-link">
+            <a href="index.html"><span class="lang-content active" data-lang="bn">← মূল পাতায় ফিরে যান</span><span class="lang-content" data-lang="en">← Back to Home</span></a>
+        </div>
+    </div>
+
+    <script>
+        let currentLanguage = 'bn';
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update active language button
+            document.querySelectorAll('.language-switcher button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide content based on language
+            document.querySelectorAll('.lang-content').forEach(content => {
+                content.classList.remove('active');
+                if (content.getAttribute('data-lang') === lang) {
+                    content.classList.add('active');
+                }
+            });
+            
+            // Store language preference
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        function loadLanguagePreference() {
+            const savedLang = localStorage.getItem('preferred_language');
+            if (savedLang && savedLang !== 'bn') {
+                const langButton = document.querySelector(`.language-switcher button[onclick="changeLanguage('${savedLang}')"]`);
+                if (langButton) {
+                    langButton.click();
+                }
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.querySelectorAll('.tab')[0].classList.add('active');
+            document.querySelectorAll('.tab')[1].classList.remove('active');
+        }
+        
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.querySelectorAll('.tab')[0].classList.remove('active');
+            document.querySelectorAll('.tab')[1].classList.add('active');
+        }
+        
+        function companyLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const phone = document.getElementById('loginPhone').value;
+            
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const company = companies.find(c => c.email === email && c.phone === phone);
+            
+            if (company) {
+                const now = new Date();
+                const expiryDate = new Date(company.subscriptionExpiry);
+                
+                if (company.subscription === 'active' || (company.subscription === 'trial' && now < expiryDate)) {
+                    localStorage.setItem('currentCompany', JSON.stringify(company));
+                    window.location.href = 'company-dashboard.html';
+                } else {
+                    let errorMessage = currentLanguage === 'bn' ? 
+                        'আপনার সাবস্ক্রিপশন মেয়াদ শেষ! অনুগ্রহ করে নবায়ন করুন।' : 
+                        'Your subscription has expired! Please renew.';
+                    document.getElementById('loginError').textContent = errorMessage;
+                }
+            } else {
+                let errorMessage = currentLanguage === 'bn' ? 'ভুল ইমেইল বা ফোন নম্বর!' : 'Incorrect email or phone number!';
+                document.getElementById('loginError').textContent = errorMessage;
+            }
+        }
+        
+        function companyRegister(event) {
+            event.preventDefault();
+            
+            const companyName = document.getElementById('regCompanyName').value;
+            const ownerName = document.getElementById('regOwnerName').value;
+            const location = document.getElementById('regLocation').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const bank = document.getElementById('regBank').value;
+            
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            
+            // Check if company already exists
+            if (companies.find(c => c.email === email || c.phone === phone)) {
+                let errorMessage = currentLanguage === 'bn' ? 'এই ইমেইল বা ফোন নম্বর দিয়ে ইতিমধ্যে নিবন্ধন করা হয়েছে!' : 'Already registered with this email or phone number!';
+                document.getElementById('registerError').textContent = errorMessage;
+                return;
+            }
+            
+            const newCompany = {
+                id: Date.now(),
+                name: companyName,
+                owner: ownerName,
+                location,
+                email,
+                phone,
+                bank,
+                subscription: 'trial', // Start with trial
+                subscriptionExpiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+                trialUsed: false,
+                prices: {
+                    minikit: 1500,
+                    kash: 3000,
+                    lalsonno: 1350
+                },
+                registeredAt: new Date().toISOString()
+            };
+            
+            companies.push(newCompany);
+            localStorage.setItem('companies', JSON.stringify(companies));
+            
+            let successMessage = currentLanguage === 'bn' ? 'সফলভাবে নিবন্ধন সম্পন্ন হয়েছে! এখন লগইন করুন।' : 'Registration successful! Please log in now.';
+            document.getElementById('registerSuccess').textContent = successMessage;
+            document.getElementById('registerError').textContent = '';
+            
+            // Clear form
+            document.getElementById('regCompanyName').value = '';
+            document.getElementById('regOwnerName').value = '';
+            document.getElementById('regLocation').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPhone').value = '';
+            document.getElementById('regBank').value = '';
+            
+            // Switch to login tab after 2 seconds
+            setTimeout(() => {
+                showLogin();
+                document.getElementById('registerSuccess').textContent = '';
+            }, 2000);
+        }
+
+        // Initialize
+        loadLanguagePreference();
+    </script>
+
+<script>
+function loginUser() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const role = "company";
+
+    fetch("http://127.0.0.1:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, role })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "company-dashboard.html";
+        } else {
+            alert(data.message);
+        }
+    });
+}
+</script>
+
+</body>
+</html>

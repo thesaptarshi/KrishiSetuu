@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - KrishiSetu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Bengali', Arial, sans-serif;
+            background: linear-gradient(135deg, #9C27B0, #E1BEE7);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            color: #9C27B0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #9C27B0;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: #9C27B0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        
+        .btn:hover {
+            background: #7B1FA2;
+        }
+        
+        .back-link {
+            text-align: center;
+        }
+        
+        .back-link a {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .language-switcher {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .language-switcher button {
+            padding: 0.5rem 1rem;
+            background: #ddd;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0 0.5rem;
+        }
+        
+        .language-switcher button:hover {
+            background: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🔐 Admin Panel</div>
+            <p><span lang="bn">কৃষিসেতু অ্যাডমিন লগইন</span><span lang="en">KrishiSetu Admin Login</span></p>
+        </div>
+        
+        <div class="language-switcher">
+            <button onclick="switchLanguage('bn')">বাংলা</button>
+            <button onclick="switchLanguage('en')">English</button>
+        </div>
+        
+        <form onsubmit="adminLogin(event)">
+            <div class="form-group">
+                <label><span lang="bn">ইউজার আইডি:</span><span lang="en">Username:</span></label>
+                <input type="text" id="employeeId" required placeholder="krishi1">
+            </div>
+            <div class="form-group">
+                <label><span lang="bn">পাসওয়ার্ড:</span><span lang="en">Password:</span></label>
+                <input type="password" id="password" required placeholder="1234">
+            </div>
+            <button type="submit" class="btn"><span lang="bn">লগইন করুন</span><span lang="en">Login</span></button>
+            <div id="loginError" class="error"></div>
+        </form>
+        
+        <div class="back-link">
+            <a href="index.html"><span lang="bn">← মূল পাতায় ফিরে যান</span><span lang="en">← Go back to Home</span></a>
+        </div>
+    </div>
+
+    <script>
+        function adminLogin(event) {
+            event.preventDefault();
+            
+            const employeeId = document.getElementById('employeeId').value;
+            const password = document.getElementById('password').value;
+            
+            // Admin credentials
+            if (employeeId === 'krishi1' && password === '1234') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                document.getElementById('loginError').textContent = '<span lang="bn">ভুল ইউজার আইডি বা পাসওয়ার্ড!</span><span lang="en">Invalid username or password!</span>';
+            }
+        }
+
+        function switchLanguage(lang) {
+            document.documentElement.lang = lang;
+            const spans = document.querySelectorAll('[lang]');
+            spans.forEach(span => {
+                if (span.lang === lang) {
+                    span.style.display = 'inline';
+                } else {
+                    span.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+<script>
+function loginUser() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const role = "admin";
+
+    fetch("http://127.0.0.1:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, role })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "admin-dashboard.html";
+        } else {
+            alert(data.message);
+        }
+    });
+}
+</script>
+
+</body>
+</html>

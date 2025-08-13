@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কর্মচারী লগইন - কৃষিসেতু</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Bengali', Arial, sans-serif;
+            background: linear-gradient(135deg, #FF9800, #FFB74D), url('/placeholder.svg?height=600&width=800');
+            background-blend-mode: overlay;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            color: #FF9800;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #FF9800;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        
+        .btn:hover {
+            background: #F57C00;
+        }
+        
+        .back-link {
+            text-align: center;
+        }
+        
+        .back-link a {
+            color: #666;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .employee-info {
+            background: #fff3e0;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid #FFB74D;
+        }
+        
+        .employee-info h4 {
+            color: #E65100;
+            margin-bottom: 0.5rem;
+        }
+        
+        .employee-info p {
+            color: #BF360C;
+            font-size: 0.9rem;
+        }
+
+        .employee-list {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .employee-list h5 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .employee-list table {
+            width: 100%;
+            font-size: 0.8rem;
+            border-collapse: collapse;
+        }
+
+        .employee-list th,
+        .employee-list td {
+            padding: 0.25rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .employee-list th {
+            background: #e9ecef;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">👨‍💼 কর্মচারী পোর্টাল</div>
+            <p>কৃষিসেতু অর্ডার ম্যানেজমেন্ট সিস্টেম</p>
+        </div>
+        
+        <div class="employee-info">
+            <h4>🎯 কর্মচারী তথ্য:</h4>
+            <p>আপনার ইউজার আইডি এবং এলাকার নাম দিয়ে লগইন করুন। প্রতিটি কর্মচারী নির্দিষ্ট এলাকার অর্ডার পরিচালনা করেন।</p>
+        </div>
+
+        <div class="employee-list">
+            <h5>📋 কর্মচারী তালিকা:</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>আইডি</th>
+                        <th>এলাকা/পাসওয়ার্ড</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1001</td><td>ausnara</td></tr>
+                    <tr><td>1002</td><td>indus</td></tr>
+                    <tr><td>1003</td><td>saspur</td></tr>
+                    <tr><td>1004</td><td>narayanpur</td></tr>
+                    <tr><td>1005</td><td>kharrah</td></tr>
+                    <tr><td>1006</td><td>birasimul</td></tr>
+                    <tr><td>1007</td><td>mohespur</td></tr>
+                    <tr><td>1008</td><td>aswinpur</td></tr>
+                    <tr><td>1009</td><td>kumrul</td></tr>
+                    <tr><td>1010</td><td>rosulpur</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <form onsubmit="employeeLogin(event)">
+            <div class="form-group">
+                <label>ইউজার আইডি:</label>
+                <input type="text" id="employeeId" required placeholder="1001, 1002, 1003...">
+            </div>
+            <div class="form-group">
+                <label>পাসওয়ার্ড (এলাকার নাম):</label>
+                <input type="password" id="password" required placeholder="ausnara, indus, saspur...">
+            </div>
+            <button type="submit" class="btn">লগইন করুন</button>
+            <div id="loginError" class="error"></div>
+        </form>
+        
+        <div class="back-link">
+            <a href="index.html">← মূল পাতায় ফিরে যান</a>
+        </div>
+    </div>
+
+    <script>
+        function employeeLogin(event) {
+            event.preventDefault();
+            
+            const employeeId = parseInt(document.getElementById('employeeId').value);
+            const password = document.getElementById('password').value.toLowerCase().trim();
+            
+            // Employee credentials mapping
+            const employees = {
+                1001: { password: 'ausnara', location: 'ausnara' },
+                1002: { password: 'indus', location: 'indus' },
+                1003: { password: 'saspur', location: 'saspur' },
+                1004: { password: 'narayanpur', location: 'narayanpur' },
+                1005: { password: 'kharrah', location: 'kharrah' },
+                1006: { password: 'birasimul', location: 'birasimul' },
+                1007: { password: 'mohespur', location: 'mohespur' },
+                1008: { password: 'aswinpur', location: 'aswinpur' },
+                1009: { password: 'kumrul', location: 'kumrul' },
+                1010: { password: 'rosulpur', location: 'rosulpur' }
+            };
+            
+            if (employees[employeeId] && employees[employeeId].password === password) {
+                // Store employee session
+                const employeeData = {
+                    id: employeeId,
+                    location: employees[employeeId].location,
+                    loginTime: new Date().toISOString()
+                };
+                
+                localStorage.setItem('currentEmployee', JSON.stringify(employeeData));
+                window.location.href = 'employee-dashboard.html';
+            } else {
+                document.getElementById('loginError').textContent = 'ভুল ইউজার আইডি বা পাসওয়ার্ড!';
+            }
+        }
+
+        // Clear any existing employee session on page load
+        localStorage.removeItem('currentEmployee');
+    </script>
+
+<script>
+function loginUser() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const role = "employee";
+
+    fetch("http://127.0.0.1:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, role })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "employee-dashboard.html";
+        } else {
+            alert(data.message);
+        }
+    });
+}
+</script>
+
+</body>
+</html>

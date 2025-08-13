@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কর্মচারী ড্যাশবোর্ড - কৃষিসেতু</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Bengali', Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: #FF9800;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logout-btn, .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .welcome-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .orders-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .order-item {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+        
+        .order-item:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .order-item.company-assigned {
+            border-color: #4CAF50;
+            background: #f8fff8;
+        }
+        
+        .order-item.rejected {
+            border-color: #f44336;
+            background: #fff8f8;
+        }
+        
+        .order-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-company-assigned {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-payment-pending {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-completed {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 2px solid #4CAF50;
+        }
+        
+        .btn {
+            background: #FF9800;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: #F57C00;
+        }
+        
+        .btn-success {
+            background: #4CAF50;
+        }
+        
+        .btn-success:hover {
+            background: #45a049;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        
+        .companies-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .company-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .company-card {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .company-card:hover {
+            border-color: #FF9800;
+            transform: translateY(-2px);
+        }
+        
+        .company-card.selected {
+            border-color: #4CAF50;
+            background: #f8fff8;
+        }
+        
+        .company-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FF9800;
+            margin: 1rem 0;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 0 auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .company-selection-section {
+            background: #e3f2fd;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border: 1px solid #2196F3;
+        }
+        
+        .company-selection-section h4 {
+            color: #1976d2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .assign-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .assign-btn:hover {
+            background: #45a049;
+        }
+        
+        .assign-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+        }
+        
+        .company-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .rank-1 { background: #FFD700; color: #B8860B; }
+        .rank-2 { background: #C0C0C0; color: #696969; }
+        .rank-3 { background: #CD7F32; color: #8B4513; }
+        .rank-other { background: #E0E0E0; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <a href="index.html" class="back-btn">← পূর্ববর্তী</a>
+            <div class="logo">👨‍💼 কর্মচারী ড্যাশবোর্ড</div>
+        </div>
+        <div class="user-info">
+            <span id="employeeInfo">কর্মচারী</span>
+            <button class="logout-btn" onclick="logout()">লগআউট</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="welcome-card">
+            <h2>স্বাগতম, কর্মচারী <span id="employeeId"></span>!</h2>
+            <p>আপনার এলাকা: <strong id="employeeLocation"></strong></p>
+            <p>অ্যাডমিন কর্তৃক নিশ্চিত অর্ডারগুলি পরিচালনা করুন এবং সেরা কোম্পানি নির্বাচন করুন</p>
+        </div>
+        
+        <div class="orders-section">
+            <h3>📋 আমার এলাকার অর্ডারসমূহ</h3>
+            <p>অ্যাডমিন কর্তৃক নিশ্চিত এবং আপনার এলাকার অর্ডারগুলি এখানে দেখানো হবে</p>
+            <div id="assignedOrdersList">
+                <!-- Orders will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Company Selection Modal -->
+    <div id="companyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCompanyModal()">&times;</span>
+            <h3>কোম্পানি নির্বাচন করুন</h3>
+            <p>এই অর্ডারের জন্য সেরা দামের কোম্পানি বেছে নিন:</p>
+            
+            <div id="orderDetails" style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
+                <!-- Order details will be populated -->
+            </div>
+            
+            <div class="companies-section">
+                <h4>💰 শীর্ষ ১০ কোম্পানির দাম</h4>
+                <div class="company-grid" id="companyGrid">
+                    <!-- Companies will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="company-selection-section" id="selectionSection" style="display: none;">
+                <h4>✅ নির্বাচিত কোম্পানি</h4>
+                <div class="company-info" id="selectedCompanyInfo">
+                    <!-- Selected company info will be populated -->
+                </div>
+                <p style="color: #1976d2; font-size: 0.9rem; margin-top: 0.5rem;">
+                    <strong>নোট:</strong> কোম্পানি নির্বাচনের পর, তারা সরাসরি কৃষকের সাথে যোগাযোগ করবে এবং পেমেন্ট প্রক্রিয়া সম্পন্ন করবে।
+                </p>
+                <button class="assign-btn" onclick="assignOrderToCompany()">
+                    কোম্পানিকে অর্ডার প্রেরণ করুন
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if employee is logged in
+        const currentEmployee = JSON.parse(localStorage.getItem('currentEmployee'));
+        if (!currentEmployee) {
+            window.location.href = 'employee-login.html';
+        }
+        
+        // Display employee info
+        document.getElementById('employeeId').textContent = currentEmployee.id;
+        document.getElementById('employeeLocation').textContent = currentEmployee.location;
+        document.getElementById('employeeInfo').textContent = `কর্মচারী ${currentEmployee.id} (${currentEmployee.location})`;
+        
+        let currentOrderForCompanySelection = null;
+        let selectedCompany = null;
+        
+        // Load assigned orders for this employee's location
+        function loadAssignedOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            // Filter orders that are:
+            // 1. Confirmed by admin (status: 'confirmed')
+            // 2. Match employee's location (case insensitive)
+            const assignedOrders = orders.filter(order => 
+                order.status === 'confirmed' && 
+                order.location.toLowerCase().includes(currentEmployee.location.toLowerCase())
+            );
+            
+            const ordersList = document.getElementById('assignedOrdersList');
+            
+            if (assignedOrders.length === 0) {
+                ordersList.innerHTML = '<p>বর্তমানে আপনার এলাকার কোনো নিশ্চিত অর্ডার নেই।</p>';
+                return;
+            }
+            
+            ordersList.innerHTML = '';
+            
+            assignedOrders.forEach(order => {
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order-item';
+                
+                let statusClass = 'status-pending';
+                let statusText = 'অ্যাডমিন কর্তৃক নিশ্চিত';
+                
+                if (order.employeeStatus === 'company_assigned') {
+                    statusClass = 'status-company-assigned';
+                    statusText = 'কোম্পানি নির্বাচিত';
+                    orderDiv.classList.add('company-assigned');
+                } else if (order.employeeStatus === 'payment_pending') {
+                    statusClass = 'status-payment-pending';
+                    statusText = 'কোম্পানি পেমেন্ট প্রক্রিয়াধীন';
+                    orderDiv.classList.add('company-assigned');
+                } else if (order.employeeStatus === 'completed') {
+                    statusClass = 'status-completed';
+                    statusText = 'সম্পন্ন (পেমেন্ট সম্পূর্ণ)';
+                    orderDiv.classList.add('company-assigned');
+                } else if (order.employeeStatus === 'rejected') {
+                    statusClass = 'status-rejected';
+                    statusText = 'বাতিল';
+                    orderDiv.classList.add('rejected');
+                }
+                
+                // Show assigned company info if available
+                let companyInfo = '';
+                if (order.selectedCompany) {
+                    companyInfo = `
+                        <div class="company-info">
+                            <strong>নির্বাচিত কোম্পানি:</strong> ${order.selectedCompany.name}<br>
+                            <strong>চূড়ান্ত দাম:</strong> ৳${order.finalPrice}<br>
+                            <strong>মোট পরিমাণ:</strong> ৳${order.finalTotalAmount}
+                        </div>
+                    `;
+                }
+                
+                orderDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4>অর্ডার #${order.id}</h4>
+                        <span class="order-status ${statusClass}">${statusText}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div><strong>কৃষক:</strong> ${order.farmerName}</div>
+                        <div><strong>ফোন:</strong> ${order.farmerPhone}</div>
+                        <div><strong>পণ্য:</strong> ${order.productName}</div>
+                        <div><strong>পরিমাণ:</strong> ${order.quantity} পিস</div>
+                        <div><strong>দর:</strong> ৳${order.price}</div>
+                        <div><strong>মোট:</strong> ৳${order.totalAmount}</div>
+                        <div><strong>তারিখ:</strong> ${order.date} ${order.time}</div>
+                        <div><strong>স্থান:</strong> ${order.location}</div>
+                    </div>
+                    ${companyInfo}
+                    <div class="order-actions">
+                        ${!order.employeeStatus ? `
+                            <button class="btn btn-success" onclick="selectCompanyForOrder(${order.id})">
+                                ✅ কোম্পানি নির্বাচন করুন
+                            </button>
+                            <button class="btn btn-danger" onclick="rejectOrder(${order.id})">
+                                ❌ অর্ডার বাতিল করুন
+                            </button>
+                        ` : ''}
+                        ${order.employeeStatus === 'company_assigned' || order.employeeStatus === 'payment_pending' ? `
+                            <button class="btn" onclick="viewOrderDetails(${order.id})">
+                                📋 বিস্তারিত দেখুন
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                
+                ordersList.appendChild(orderDiv);
+            });
+        }
+        
+        // Select company for order
+        function selectCompanyForOrder(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const order = orders.find(o => o.id === orderId);
+            
+            if (!order) return;
+            
+            currentOrderForCompanySelection = order;
+            
+            // Show order details
+            document.getElementById('orderDetails').innerHTML = `
+                <h4>অর্ডার #${order.id}</h4>
+                <p><strong>কৃষক:</strong> ${order.farmerName} (${order.farmerPhone})</p>
+                <p><strong>পণ্য:</strong> ${order.productName}</p>
+                <p><strong>পরিমাণ:</strong> ${order.quantity} পিস</p>
+                <p><strong>বর্তমান দাম:</strong> ৳${order.price} (প্রতি পিস)</p>
+                <p><strong>বর্তমান মোট:</strong> ৳${order.totalAmount}</p>
+            `;
+            
+            // Load top 10 companies with their prices
+            loadCompaniesForSelection(order.product);
+            
+            document.getElementById('companyModal').style.display = 'block';
+        }
+        
+        // Load companies for selection
+        function loadCompaniesForSelection(productKey) {
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            
+            // Filter active companies and sort by price (highest first)
+            const activeCompanies = companies
+                .filter(company => 
+                    company.subscription === 'active' && 
+                    company.prices && 
+                    company.prices[productKey] && 
+                    company.prices[productKey] > 0
+                )
+                .sort((a, b) => b.prices[productKey] - a.prices[productKey])
+                .slice(0, 10); // Top 10 companies
+            
+            const companyGrid = document.getElementById('companyGrid');
+            companyGrid.innerHTML = '';
+            
+            if (activeCompanies.length === 0) {
+                companyGrid.innerHTML = '<p>এই পণ্যের জন্য কোনো সক্রিয় কোম্পানি নেই।</p>';
+                return;
+            }
+            
+            activeCompanies.forEach((company, index) => {
+                const companyCard = document.createElement('div');
+                companyCard.className = 'company-card';
+                companyCard.onclick = () => selectCompany(company, productKey);
+                
+                // Add ranking badge
+                let rankBadge = '';
+                let rankClass = '';
+                if (index === 0) {
+                    rankBadge = '🥇 সর্বোচ্চ দাম';
+                    rankClass = 'rank-1';
+                } else if (index === 1) {
+                    rankBadge = '🥈 দ্বিতীয় সর্বোচ্চ';
+                    rankClass = 'rank-2';
+                } else if (index === 2) {
+                    rankBadge = '🥉 তৃতীয় সর্বোচ্চ';
+                    rankClass = 'rank-3';
+                } else {
+                    rankBadge = `#${index + 1}`;
+                    rankClass = 'rank-other';
+                }
+                
+                companyCard.innerHTML = `
+                    <div class="rank-badge ${rankClass}">${rankBadge}</div>
+                    <h4>${company.name}</h4>
+                    <div class="company-price">৳${company.prices[productKey]}</div>
+                    <p style="color: #666; font-size: 0.9rem;">${company.location}</p>
+                    <p style="color: #666; font-size: 0.8rem;">মালিক: ${company.owner}</p>
+                    <p style="color: #666; font-size: 0.8rem;">ফোন: ${company.phone}</p>
+                `;
+                
+                companyGrid.appendChild(companyCard);
+            });
+        }
+        
+        // Select a company
+        function selectCompany(company, productKey) {
+            selectedCompany = company;
+            
+            // Remove previous selections
+            document.querySelectorAll('.company-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Mark current selection
+            event.currentTarget.classList.add('selected');
+            
+            // Show selection section
+            const selectionSection = document.getElementById('selectionSection');
+            const totalAmount = company.prices[productKey] * currentOrderForCompanySelection.quantity;
+            
+            document.getElementById('selectedCompanyInfo').innerHTML = `
+                <h5>${company.name}</h5>
+                <p><strong>দাম:</strong> ৳${company.prices[productKey]} (প্রতি পিস)</p>
+                <p><strong>মোট পরিমাণ:</strong> ৳${totalAmount}</p>
+                <p><strong>এলাকা:</strong> ${company.location}</p>
+                <p><strong>মালিক:</strong> ${company.owner}</p>
+                <p><strong>ফোন:</strong> ${company.phone}</p>
+            `;
+            
+            selectionSection.style.display = 'block';
+        }
+        
+        // Assign order to selected company
+        function assignOrderToCompany() {
+            if (!selectedCompany || !currentOrderForCompanySelection) return;
+            
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const orderIndex = orders.findIndex(o => o.id === currentOrderForCompanySelection.id);
+            
+            if (orderIndex !== -1) {
+                // Update order with employee processing info
+                orders[orderIndex].employeeStatus = 'company_assigned';
+                orders[orderIndex].selectedCompany = selectedCompany;
+                orders[orderIndex].finalPrice = selectedCompany.prices[currentOrderForCompanySelection.product];
+                orders[orderIndex].finalTotalAmount = selectedCompany.prices[currentOrderForCompanySelection.product] * currentOrderForCompanySelection.quantity;
+                orders[orderIndex].processedBy = currentEmployee.id;
+                orders[orderIndex].processedAt = new Date().toISOString();
+                
+                // The order is now assigned to company, waiting for company payment
+                orders[orderIndex].status = 'company_assigned';
+                
+                localStorage.setItem('orders', JSON.stringify(orders));
+                
+                alert(`অর্ডার সফলভাবে ${selectedCompany.name} কোম্পানির কাছে পাঠানো হয়েছে!\n\nকোম্পানি এখন:\n1. কৃষকের সাথে যোগাযোগ করবে\n2. পণ্য সংগ্রহের ব্যবস্থা করবে\n3. পেমেন্ট প্রক্রিয়া সম্পন্ন করবে\n\nমোট পরিমাণ: ৳${orders[orderIndex].finalTotalAmount}`);
+                
+                closeCompanyModal();
+                loadAssignedOrders();
+            }
+        }
+        
+        // Reject order
+        function rejectOrder(orderId) {
+            if (!confirm('আপনি কি নিশ্চিত যে এই অর্ডারটি বাতিল করতে চান?')) {
+                return;
+            }
+            
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].employeeStatus = 'rejected';
+                orders[orderIndex].rejectedBy = currentEmployee.id;
+                orders[orderIndex].rejectedAt = new Date().toISOString();
+                orders[orderIndex].status = 'employee_rejected';
+                
+                localStorage.setItem('orders', JSON.stringify(orders));
+                
+                alert('অর্ডার বাতিল করা হয়েছে।');
+                loadAssignedOrders();
+            }
+        }
+        
+        // View order details
+        function viewOrderDetails(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const order = orders.find(o => o.id === orderId);
+            
+            if (order && order.selectedCompany) {
+                let statusMessage = '';
+                if (order.employeeStatus === 'company_assigned') {
+                    statusMessage = 'কোম্পানি পেমেন্ট প্রক্রিয়া শুরু করবে';
+                } else if (order.employeeStatus === 'payment_pending') {
+                    statusMessage = 'কোম্পানি পেমেন্ট প্রক্রিয়াধীন';
+                } else if (order.employeeStatus === 'completed') {
+                    statusMessage = 'পেমেন্ট সম্পন্ন হয়েছে';
+                }
+                
+                alert(`অর্ডার #${order.id}\n\nনির্বাচিত কোম্পানি: ${order.selectedCompany.name}\nকোম্পানি ফোন: ${order.selectedCompany.phone}\nচূড়ান্ত দাম: ৳${order.finalPrice}\nমোট পরিমাণ: ৳${order.finalTotalAmount}\n\nস্ট্যাটাস: ${statusMessage}`);
+            }
+        }
+        
+        // Close company modal
+        function closeCompanyModal() {
+            document.getElementById('companyModal').style.display = 'none';
+            document.getElementById('selectionSection').style.display = 'none';
+            currentOrderForCompanySelection = null;
+            selectedCompany = null;
+            
+            // Remove all selections
+            document.querySelectorAll('.company-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentEmployee');
+            window.location.href = 'index.html';
+        }
+        
+        // Initialize page
+        loadAssignedOrders();
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('companyModal');
+            if (event.target === modal) {
+                closeCompanyModal();
+            }
+        }
+        
+        // Auto-refresh orders every 30 seconds
+        setInterval(loadAssignedOrders, 30000);
+    </script>
+</body>
+</html>

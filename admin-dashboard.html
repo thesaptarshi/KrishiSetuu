@@ -1,0 +1,2871 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - KrishiSetu</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-bottom: 2px solid #444;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .language-switcher {
+            display: flex;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 0.25rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .lang-btn.active {
+            background: white;
+            color: #000;
+            box-shadow: 0 2px 10px rgba(255,255,255,0.2);
+        }
+        
+        .back-btn, .logout-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-btn:hover, .logout-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            color: #000;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #000000, #333333);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            color: #000;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .section h3 {
+            margin-bottom: 2rem;
+            color: #000;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #f0f0f0;
+            padding: 0.5rem;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 1rem 2rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .price-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 2rem;
+            background: #ffffff;
+            transition: all 0.3s ease;
+        }
+        
+        .price-card:hover {
+            border-color: #000;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: #000;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #ffffff;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #333333, #000000);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(135deg, #66BB6A, #4CAF50);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336, #e57373);
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #e57373, #f44336);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #FF9800, #FFB74D);
+        }
+        
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #FFB74D, #FF9800);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2196F3, #64B5F6);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #64B5F6, #2196F3);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .data-table th {
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 1rem;
+        }
+        
+        .add-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .order-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            background: #ffffff;
+            transition: all 0.3s ease;
+        }
+        
+        .order-item:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: #000;
+        }
+        
+        .order-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .order-actions .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Language content visibility */
+        .lang-content {
+            display: none;
+        }
+        
+        .lang-content.active {
+            display: inline !important;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 0 auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Enhanced Search Box Styles */
+        .search-container {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+            border: 3px solid #ddd;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            background: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.3rem;
+            pointer-events: none;
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.8rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .clear-search {
+            background: linear-gradient(135deg, #f44336, #e57373);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: none;
+            white-space: nowrap;
+        }
+
+        .clear-search:hover {
+            background: linear-gradient(135deg, #e57373, #f44336);
+            transform: translateY(-2px);
+        }
+
+        .clear-search.show {
+            display: block;
+        }
+
+        .search-results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border-left: 5px solid #2196F3;
+        }
+
+        .search-count {
+            font-weight: bold;
+            color: #1976D2;
+            font-size: 1.1rem;
+        }
+
+        .search-term-display {
+            font-style: italic;
+            color: #666;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .search-highlight {
+            background: linear-gradient(135deg, #ffeb3b, #fff176);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(255, 235, 59, 0.3);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 20px;
+            border: 3px dashed #ddd;
+            margin: 2rem 0;
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .no-results-text {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .no-results-suggestion {
+            font-size: 1rem;
+            color: #888;
+        }
+
+        /* Quick Search Suggestions */
+        .quick-search {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .quick-search-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-right: 0.5rem;
+            align-self: center;
+        }
+
+        .quick-search-tag {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1976D2;
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #90CAF9;
+        }
+
+        .quick-search-tag:hover {
+            background: linear-gradient(135deg, #bbdefb, #90CAF9);
+            transform: translateY(-1px);
+        }
+
+        /* Loading Animation */
+        .search-loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .header-left, .header-right {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .price-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .add-form {
+                grid-template-columns: 1fr;
+            }
+
+            .order-actions {
+                flex-direction: column;
+            }
+
+            .order-actions .btn {
+                width: 100%;
+            }
+
+            .search-controls {
+                flex-direction: column;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+
+            .search-filters {
+                justify-content: center;
+            }
+
+            .search-results-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .quick-search {
+                justify-content: center;
+            }
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status-completed {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 2px solid #4CAF50;
+        }
+
+        .farmers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .farmer-card {
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .farmer-card:hover {
+            border-color: #4CAF50;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .farmer-card.search-match {
+            border-color: #2196F3;
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.2);
+        }
+
+        .farmer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .farmer-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .farmer-id {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .farmer-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .farmer-banking {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #2196F3;
+        }
+
+        .banking-title {
+            font-size: 0.9rem;
+            color: #2196F3;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .banking-details {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+
+        .stipend-info {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c8);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 1rem;
+            border: 2px solid #4CAF50;
+        }
+
+        .stipend-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 0.25rem;
+        }
+
+        .stipend-label {
+            font-size: 0.85rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .farmer-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .registration-date {
+            text-align: center;
+            padding: 0.75rem;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .date-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .date-value {
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .payment-history {
+            background: #f0f8ff;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #2196F3;
+        }
+
+        .payment-history-title {
+            font-size: 0.9rem;
+            color: #2196F3;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .payment-amount {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .payment-date {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .no-payments {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            font-size: 0.85rem;
+        }
+
+        .payment-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .payment-stat {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .paid-stat {
+            background: #e8f5e8;
+            border: 1px solid #4CAF50;
+        }
+
+        .pending-stat {
+            background: #fff3cd;
+            border: 1px solid #FFC107;
+        }
+
+        .payment-stat-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .farmers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .farmer-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .banking-details {
+                grid-template-columns: 1fr;
+            }
+
+            .farmer-actions {
+                flex-direction: column;
+            }
+
+            .farmer-actions .btn {
+                width: 100%;
+            }
+
+            .payment-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="goBack()">
+                ← <span class="lang-content active" data-key="back">পূর্ববর্তী</span>
+            </button>
+            <div class="logo">
+                🔐 <span class="lang-content active" data-key="adminDashboard">অ্যাডমিন ড্যাশবোর্ড</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="language-switcher">
+                <button class="lang-btn active" onclick="changeLanguage('bn')">বাংলা</button>
+                <button class="lang-btn" onclick="changeLanguage('en')">English</button>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <span class="lang-content active" data-key="logout">লগআউট</span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="container">
+         Statistics Cards 
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalFarmers">0</div>
+                <div class="stat-label">
+                    <span class="lang-content active" data-key="totalFarmers">মোট কৃষক</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCompanies">0</div>
+                <div class="stat-label">
+                    <span class="lang-content active" data-key="totalCompanies">মোট কোম্পানি</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalOrders">0</div>
+                <div class="stat-label">
+                    <span class="lang-content active" data-key="totalOrders">মোট অর্ডার</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingOrders">0</div>
+                <div class="stat-label">
+                    <span class="lang-content active" data-key="pendingOrders">অপেক্ষমাণ অর্ডার</span>
+                </div>
+            </div>
+        </div>
+        
+         Charts Section 
+        <div class="section">
+            <h3>📊 <span class="lang-content active" data-key="dataChart">ডেটা চার্ট</span></h3>
+            <div class="chart-container">
+                <canvas id="ordersChart"></canvas>
+            </div>
+        </div>
+        
+         Main Tabs 
+        <div class="section">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('orders')">
+                    <span class="lang-content active" data-key="orderManagement">অর্ডার পরিচালনা</span>
+                </button>
+                <button class="tab" onclick="showTab('prices')">
+                    <span class="lang-content active" data-key="priceControl">দাম নিয়ন্ত্রণ</span>
+                </button>
+                <button class="tab" onclick="showTab('farmers')">
+                    <span class="lang-content active" data-key="farmerInfo">কৃষক তথ্য</span>
+                </button>
+                <button class="tab" onclick="showTab('companies')">
+                    <span class="lang-content active" data-key="companyInfo">কোম্পানি তথ্য</span>
+                </button>
+            </div>
+            
+             Orders Tab - Now First 
+            <div id="orders" class="tab-content active">
+                <h3>📋 <span class="lang-content active" data-key="allOrders">সকল অর্ডার পরিচালনা</span></h3>
+                <p><span class="lang-content active" data-key="orderManagementDescription">অর্ডার নিশ্চিত করুন, বাতিল করুন বা সম্পূর্ণ মুছে দিন</span></p>
+                
+                 Order Filter 
+                <div style="margin: 1rem 0; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                    <label for="orderFilter" style="margin-right: 1rem; font-weight: bold;">
+                        <span class="lang-content active" data-key="filterOrders">অর্ডার ফিল্টার:</span>
+                    </label>
+                    <select id="orderFilter" onchange="filterOrders()" style="padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
+                        <option value="all"><span class="lang-content active" data-key="allOrders">সকল অর্ডার</span></option>
+                        <option value="pending"><span class="lang-content active" data-key="pendingOrders">অপেক্ষমাণ</span></option>
+                        <option value="confirmed"><span class="lang-content active" data-key="confirmedOrders">নিশ্চিত</span></option>
+                        <option value="rejected"><span class="lang-content active" data-key="rejectedOrders">বাতিল</span></option>
+                    </select>
+                </div>
+
+                <div id="allOrdersList">
+                     All orders will be populated by JavaScript 
+                </div>
+            </div>
+            
+             Price Control Tab 
+            <div id="prices" class="tab-content">
+                <h3>💰 <span class="lang-content active" data-key="productPriceControl">পণ্যের দাম নিয়ন্ত্রণ</span></h3>
+                <p><span class="lang-content active" data-key="priceControlDescription">কোম্পানির দামের পরিবর্তে কৃষকদের কাছে যে দাম দেখানো হবে তা এখানে সেট করুন।</span></p>
+                
+                <div class="price-grid" id="adminPriceGrid">
+                     Admin price cards will be populated by JavaScript 
+                </div>
+            </div>
+            
+             Farmers Tab 
+            <div id="farmers" class="tab-content">
+                <h3>👨‍🌾 <span class="lang-content active" data-key="farmerInfo">কৃষক তথ্য</span></h3>
+                
+                 Add Farmer Form 
+                <div class="add-form">
+                    <input type="text" id="newFarmerName" placeholder="">
+                    <input type="tel" id="newFarmerPhone" placeholder="">
+                    <input type="email" id="newFarmerEmail" placeholder="">
+                    <input type="text" id="newFarmerLocation" placeholder="">
+                    <input type="text" id="newFarmerBank" placeholder="">
+                    <input type="text" id="newFarmerIfsc" placeholder="">
+                    <button class="btn" onclick="addFarmer()">
+                        <span class="lang-content active" data-key="addFarmer">কৃষক যোগ করুন</span>
+                    </button>
+                </div>
+
+                 Enhanced Farmer Search Container 
+                <div class="search-container">
+                    <div class="search-header">
+                        <div class="search-title">
+                            🔍 <span class="lang-content active" data-key="searchFarmers">কৃষক অনুসন্ধান</span>
+                        </div>
+                    </div>
+                    
+                    <div class="search-controls">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input 
+                                type="text" 
+                                id="farmerSearchInput" 
+                                class="search-input" 
+                                placeholder=""
+                                oninput="searchFarmers()"
+                                onkeyup="handleSearchKeyup(event)"
+                            >
+                        </div>
+                        
+                        <div class="search-filters">
+                            <select id="searchFilter" class="filter-select" onchange="searchFarmers()">
+                                <option value="all"><span class="lang-content active" data-key="searchAll">সব ক্ষেত্রে</span></option>
+                                <option value="name"><span class="lang-content active" data-key="searchByName">নাম দিয়ে</span></option>
+                                <option value="phone"><span class="lang-content active" data-key="searchByPhone">ফোন দিয়ে</span></option>
+                                <option value="email"><span class="lang-content active" data-key="searchByEmail">ইমেইল দিয়ে</span></option>
+                                <option value="location"><span class="lang-content active" data-key="searchByLocation">এলাকা দিয়ে</span></option>
+                            </select>
+                            
+                            <select id="sortFilter" class="filter-select" onchange="searchFarmers()">
+                                <option value="newest"><span class="lang-content active" data-key="sortNewest">নতুন আগে</span></option>
+                                <option value="oldest"><span class="lang-content active" data-key="sortOldest">পুরাতন আগে</span></option>
+                                <option value="name"><span class="lang-content active" data-key="sortByName">নাম অনুসারে</span></option>
+                                <option value="payment"><span class="lang-content active" data-key="sortByPayment">পেমেন্ট অনুসারে</span></option>
+                            </select>
+                            
+                            <button class="clear-search" id="clearSearchBtn" onclick="clearSearch()">
+                                ✕ <span class="lang-content active" data-key="clearSearch">পরিষ্কার করুন</span>
+                            </button>
+                        </div>
+                    </div>
+
+                     Quick Search Tags 
+                    <div class="quick-search">
+                        <span class="quick-search-label">
+                            <span class="lang-content active" data-key="quickSearch">দ্রুত অনুসন্ধান:</span>
+                        </span>
+                        <span class="quick-search-tag" onclick="quickSearch('recent')">
+                            <span class="lang-content active" data-key="recentFarmers">সাম্প্রতিক কৃষক</span>
+                        </span>
+                        <span class="quick-search-tag" onclick="quickSearch('pending_payment')">
+                            <span class="lang-content active" data-key="pendingPayments">বকেয়া পেমেন্ট</span>
+                        </span>
+                        <span class="quick-search-tag" onclick="quickSearch('high_stipend')">
+                            <span class="lang-content active" data-key="highStipend">উচ্চ স্টাইপেন</span>
+                        </span>
+                        <span class="quick-search-tag" onclick="quickSearch('no_payment')">
+                            <span class="lang-content active" data-key="noPayment">কোনো পেমেন্ট নেই</span>
+                        </span>
+                    </div>
+
+                     Search Results Header 
+                    <div class="search-results-header" id="searchResultsHeader">
+                        <div>
+                            <span class="lang-content active" data-key="searchResults">অনুসন্ধান ফলাফল:</span>
+                            <span class="search-count" id="searchCount">0</span>
+                            <span class="lang-content active" data-key="farmersFound">জন কৃষক পাওয়া গেছে</span>
+                        </div>
+                        <div class="search-term-display" id="searchTermDisplay">
+                            <span class="lang-content active" data-key="allFarmers">সকল কৃষক</span>
+                        </div>
+                    </div>
+                </div>
+
+                 Loading Animation 
+                <div class="search-loading" id="searchLoading">
+                    <div class="loading-spinner"></div>
+                    <div><span class="lang-content active" data-key="searching">অনুসন্ধান করা হচ্ছে...</span></div>
+                </div>
+                
+                 Farmers Cards Grid 
+                <div class="farmers-grid" id="farmersGrid">
+                     Farmers cards will be populated by JavaScript 
+                </div>
+            </div>
+            
+             Companies Tab 
+            <div id="companies" class="tab-content">
+                <h3>🏢 <span class="lang-content active" data-key="companyInfo">কোম্পানি তথ্য</span></h3>
+                
+                 Add Company Form 
+                <div class="add-form">
+                    <input type="text" id="newCompanyName" placeholder="">
+                    <input type="text" id="newCompanyOwner" placeholder="">
+                    <input type="text" id="newCompanyLocation" placeholder="">
+                    <input type="email" id="newCompanyEmail" placeholder="">
+                    <input type="tel" id="newCompanyPhone" placeholder="">
+                    <input type="text" id="newCompanyBank" placeholder="">
+                    <button class="btn" onclick="addCompany()">
+                        <span class="lang-content active" data-key="addCompany">কোম্পানি যোগ করুন</span>
+                    </button>
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th><span class="lang-content active" data-key="id">আইডি</span></th>
+                            <th><span class="lang-content active" data-key="companyName">কোম্পানির নাম</span></th>
+                            <th><span class="lang-content active" data-key="owner">মালিক</span></th>
+                            <th><span class="lang-content active" data-key="location">এলাকা</span></th>
+                            <th><span class="lang-content active" data-key="phone">ফোন</span></th>
+                            <th><span class="lang-content active" data-key="subscription">সাবস্ক্রিপশন</span></th>
+                            <th><span class="lang-content active" data-key="registrationDate">নিবন্ধনের তারিখ</span></th>
+                            <th><span class="lang-content active" data-key="expiryDate">মেয়াদ শেষ</span></th>
+                            <th><span class="lang-content active" data-key="actions">কার্যক্রম</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="companiesTable">
+                         Companies data will be populated by JavaScript 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+     Confirmation Modal 
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeConfirmationModal()">&times;</span>
+            <h3 id="confirmationTitle">নিশ্চিত করুন</h3>
+            <p id="confirmationMessage">আপনি কি নিশ্চিত?</p>
+            <div style="margin-top: 2rem; text-align: center;">
+                <button class="btn btn-danger" id="confirmButton" onclick="executeConfirmedAction()">
+                    <span class="lang-content active" data-key="confirm">নিশ্চিত করুন</span>
+                </button>
+                <button class="btn" onclick="closeConfirmationModal()" style="margin-left: 1rem;">
+                    <span class="lang-content active" data-key="cancel">বাতিল</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+     Payment Modal 
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePaymentModal()">&times;</span>
+            <h3 id="paymentModalTitle">💰 পেমেন্ট করুন</h3>
+            
+            <div id="paymentFarmerInfo" style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                 Farmer info will be populated 
+            </div>
+
+            <div class="form-group">
+                <label for="paymentAmount">পেমেন্ট পরিমাণ (৳)</label>
+                <input type="number" id="paymentAmount" min="0" step="0.01" placeholder="পেমেন্ট পরিমাণ লিখুন">
+            </div>
+
+            <div class="form-group">
+                <label for="paymentMethod">পেমেন্ট পদ্ধতি</label>
+                <select id="paymentMethod">
+                    <option value="bank_transfer">ব্যাংক ট্রান্সফার</option>
+                    <option value="mobile_banking">মোবাইল ব্যাংকিং</option>
+                    <option value="cash">নগদ</option>
+                    <option value="check">চেক</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="paymentReference">রেফারেন্স নম্বর (ঐচ্ছিক)</label>
+                <input type="text" id="paymentReference" placeholder="ট্রানজেকশন আইডি বা রেফারেন্স">
+            </div>
+
+            <div class="form-group">
+                <label for="paymentNote">নোট (ঐচ্ছিক)</label>
+                <textarea id="paymentNote" rows="3" placeholder="পেমেন্ট সম্পর্কে কোনো নোট..."></textarea>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-success" onclick="processPayment()">
+                    💳 পেমেন্ট সম্পন্ন করুন
+                </button>
+                <button class="btn" onclick="closePaymentModal()" style="margin-left: 1rem;">
+                    বাতিল
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Language content object
+        const languageContent = {
+            bn: {
+                back: "পূর্ববর্তী",
+                adminDashboard: "অ্যাডমিন ড্যাশবোর্ড",
+                logout: "লগআউট",
+                totalFarmers: "মোট কৃষক",
+                totalCompanies: "মোট কোম্পানি",
+                totalOrders: "মোট অর্ডার",
+                pendingOrders: "অপেক্ষমাণ অর্ডার",
+                dataChart: "ডেটা চার্ট",
+                priceControl: "দাম নিয়ন্ত্রণ",
+                orderManagement: "অর্ডার পরিচালনা",
+                farmerInfo: "কৃষক তথ্য",
+                companyInfo: "কোম্পানি তথ্য",
+                productPriceControl: "পণ্যের দাম নিয়ন্ত্রণ",
+                priceControlDescription: "কোম্পানির দামের পরিবর্তে কৃষকদের কাছে যে দাম দেখানো হবে তা এখানে সেট করুন।",
+                allOrders: "সকল অর্ডার পরিচালনা",
+                orderManagementDescription: "অর্ডার নিশ্চিত করুন, বাতিল করুন বা সম্পূর্ণ মুছে দিন",
+                filterOrders: "অর্ডার ফিল্টার:",
+                confirmedOrders: "নিশ্চিত",
+                rejectedOrders: "বাতিল",
+                addFarmer: "কৃষক যোগ করুন",
+                addCompany: "কোম্পানি যোগ করুন",
+                id: "আইডি",
+                name: "নাম",
+                phone: "ফোন",
+                email: "ইমেইল",
+                location: "এলাকা",
+                registrationDate: "নিবন্ধনের তারিখ",
+                companyName: "কোম্পানির নাম",
+                owner: "মালিক",
+                subscription: "সাবস্ক্রিপশন",
+                averageCompanyPrice: "কোম্পানিদের গড় দাম:",
+                priceShownToFarmers: "কৃষকদের কাছে দেখানো দাম:",
+                updatePrice: "দাম আপডেট করুন",
+                noOrders: "এখনো কোনো অর্ডার নেই।",
+                pending: "অপেক্ষমাণ",
+                confirmed: "নিশ্চিত",
+                rejected: "বাতিল",
+                order: "অর্ডার",
+                farmer: "কৃষক:",
+                farmerPhone: "কৃষকের ফোন:",
+                company: "কোম্পানি:",
+                product: "পণ্য:",
+                quantity: "পরিমাণ:",
+                price: "দর:",
+                total: "মোট:",
+                date: "তারিখ:",
+                pieces: "পিস",
+                active: "সক্রিয়",
+                inactive: "নিষ্ক্রিয়",
+                validPrice: "অনুগ্রহ করে সঠিক দাম লিখুন!",
+                priceUpdateSuccess: "দাম সফলভাবে আপডেট হয়েছে!",
+                fillAllInfo: "সব তথ্য পূরণ করুন!",
+                alreadyRegistered: "এই ইমেইল বা ফোন নম্বর দিয়ে ইতিমধ্যে নিবন্ধন করা হয়েছে!",
+                farmerAddSuccess: "কৃষক সফলভাবে যোগ করা হয়েছে!",
+                companyAddSuccess: "কোম্পানি সফলভাবে যোগ করা হয়েছে!",
+                farmerNamePlaceholder: "কৃষকের নাম",
+                phoneNumberPlaceholder: "ফোন নম্বর",
+                emailPlaceholder: "ইমেইল",
+                locationPlaceholder: "এলাকা",
+                bankAccountPlaceholder: "ব্যাংক অ্যাকাউন্ট",
+                ifscCode: "IFSC কোড",
+                ifscPlaceholder: "IFSC কোড",
+                companyNamePlaceholder: "কোম্পানির নাম",
+                ownerNamePlaceholder: "মালিকের নাম",
+                manage: "পরিচালনা",
+                expiryDate: "মেয়াদ শেষ",
+                actions: "কার্যক্রম",
+                trial: "স্টাইপেন",
+                deleteFarmer: "কৃষক মুছুন",
+                confirmDelete: "আপনি কি নিশ্চিত যে এই কৃষককে মুছে দিতে চান?",
+                farmerDeleteSuccess: "কৃষক সফলভাবে মুছে দেওয়া হয়েছে!",
+                adminConfirm: "নিশ্চিত করুন",
+                adminReject: "বাতিল করুন",
+                deleteOrder: "অর্ডার মুছুন",
+                orderConfirmedByAdmin: "অর্ডার অ্যাডমিন দ্বারা নিশ্চিত করা হয়েছে!",
+                orderRejectedByAdmin: "অর্ডার অ্যাডমিন দ্বারা বাতিল করা হয়েছে!",
+                orderDeletedByAdmin: "অর্ডার সম্পূর্ণভাবে মুছে দেওয়া হয়েছে!",
+                confirmRejectOrder: "আপনি কি নিশ্চিত যে এই অর্ডারটি বাতিল করতে চান?",
+                confirmDeleteOrder: "আপনি কি নিশ্চিত যে এই অর্ডারটি সম্পূর্ণভাবে মুছে দিতে চান? এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।",
+                deleteCompany: "কোম্পানি মুছুন",
+                confirmDeleteCompany: "আপনি কি নিশ্চিত যে এই কোম্পানিটি মুছে দিতে চান?",
+                companyDeleteSuccess: "কোম্পানি সফলভাবে মুছে দেওয়া হয়েছে!",
+                confirm: "নিশ্চিত করুন",
+                cancel: "বাতিল",
+                rejectOrder: "অর্ডার বাতিল",
+                deleteOrderPermanently: "স্থায়ীভাবে মুছুন",
+                makePayment: "পেমেন্ট করুন",
+                paymentHistory: "পেমেন্ট ইতিহাস",
+                totalPaid: "মোট পরিশোধিত",
+                pendingAmount: "বকেয়া পরিমাণ",
+                noPayments: "কোনো পেমেন্ট নেই",
+                paymentSuccess: "পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!",
+                invalidPaymentAmount: "অনুগ্রহ করে সঠিক পেমেন্ট পরিমাণ লিখুন!",
+                searchFarmers: "কৃষক অনুসন্ধান",
+                searchFarmersPlaceholder: "কৃষকের নাম, ফোন, ইমেইল বা এলাকা দিয়ে খুঁজুন...",
+                clearSearch: "পরিষ্কার করুন",
+                searchResults: "অনুসন্ধান ফলাফল:",
+                farmersFound: "জন কৃষক পাওয়া গেছে",
+                noFarmersFound: "কোনো কৃষক পাওয়া যায়নি",
+                searchFor: "খোঁজা হচ্ছে:",
+                allFarmers: "সকল কৃষক",
+                searchAll: "সব ক্ষেত্রে",
+                searchByName: "নাম দিয়ে",
+                searchByPhone: "ফোন দিয়ে",
+                searchByEmail: "ইমেইল দিয়ে",
+                searchByLocation: "এলাকা দিয়ে",
+                sortNewest: "নতুন আগে",
+                sortOldest: "পুরাতন আগে",
+                sortByName: "নাম অনুসারে",
+                sortByPayment: "পেমেন্ট অনুসারে",
+                quickSearch: "দ্রুত অনুসন্ধান:",
+                recentFarmers: "সাম্প্রতিক কৃষক",
+                pendingPayments: "বকেয়া পেমেন্ট",
+                highStipend: "উচ্চ স্টাইপেন",
+                noPayment: "কোনো পেমেন্ট নেই",
+                searching: "অনুসন্ধান করা হচ্ছে...",
+                tryDifferentSearch: "ভিন্ন কিছু খোঁজার চেষ্টা করুন",
+                checkSpelling: "বানান পরীক্ষা করুন বা কম শব্দ ব্যবহার করুন"
+            },
+            en: {
+                back: "Back",
+                adminDashboard: "Admin Dashboard",
+                logout: "Logout",
+                totalFarmers: "Total Farmers",
+                totalCompanies: "Total Companies",
+                totalOrders: "Total Orders",
+                pendingOrders: "Pending Orders",
+                dataChart: "Data Chart",
+                priceControl: "Price Control",
+                orderManagement: "Order Management",
+                farmerInfo: "Farmer Info",
+                companyInfo: "Company Info",
+                productPriceControl: "Product Price Control",
+                priceControlDescription: "Set the price to be shown to farmers instead of company prices here.",
+                allOrders: "All Order Management",
+                orderManagementDescription: "Confirm, reject or permanently delete orders",
+                filterOrders: "Filter Orders:",
+                confirmedOrders: "Confirmed",
+                rejectedOrders: "Rejected",
+                addFarmer: "Add Farmer",
+                addCompany: "Add Company",
+                id: "ID",
+                name: "Name",
+                phone: "Phone",
+                email: "Email",
+                location: "Location",
+                registrationDate: "Registration Date",
+                companyName: "Company Name",
+                owner: "Owner",
+                subscription: "Subscription",
+                averageCompanyPrice: "Average Company Price:",
+                priceShownToFarmers: "Price Shown to Farmers:",
+                updatePrice: "Update Price",
+                noOrders: "No orders yet.",
+                pending: "Pending",
+                confirmed: "Confirmed",
+                rejected: "Rejected",
+                order: "Order",
+                farmer: "Farmer:",
+                farmerPhone: "Farmer Phone:",
+                company: "Company:",
+                product: "Product:",
+                quantity: "Quantity:",
+                price: "Price:",
+                total: "Total:",
+                date: "Date:",
+                pieces: "pcs",
+                active: "Active",
+                inactive: "Inactive",
+                validPrice: "Please enter a valid price!",
+                priceUpdateSuccess: "Price updated successfully!",
+                fillAllInfo: "Please fill in all the information!",
+                alreadyRegistered: "Already registered with this email or phone number!",
+                farmerAddSuccess: "Farmer added successfully!",
+                companyAddSuccess: "Company added successfully!",
+                farmerNamePlaceholder: "Farmer Name",
+                phoneNumberPlaceholder: "Phone Number",
+                emailPlaceholder: "Email",
+                locationPlaceholder: "Location",
+                bankAccountPlaceholder: "Bank Account",
+                ifscCode: "IFSC Code",
+                ifscPlaceholder: "IFSC Code",
+                companyNamePlaceholder: "Company Name",
+                ownerNamePlaceholder: "Owner Name",
+                manage: "Manage",
+                expiryDate: "Expiry Date",
+                actions: "Actions",
+                trial: "Trial",
+                inactive: "Inactive",
+                stipend: "Stipend",
+                deleteFarmer: "Delete Farmer",
+                confirmDelete: "Are you sure you want to delete this farmer?",
+                farmerDeleteSuccess: "Farmer deleted successfully!",
+                adminConfirm: "Confirm",
+                adminReject: "Reject",
+                deleteOrder: "Delete Order",
+                orderConfirmedByAdmin: "Order confirmed by admin!",
+                orderRejectedByAdmin: "Order rejected by admin!",
+                orderDeletedByAdmin: "Order permanently deleted!",
+                confirmRejectOrder: "Are you sure you want to reject this order?",
+                confirmDeleteOrder: "Are you sure you want to permanently delete this order? This action cannot be undone.",
+                deleteCompany: "Delete Company",
+                confirmDeleteCompany: "Are you sure you want to delete this company?",
+                companyDeleteSuccess: "Company deleted successfully!",
+                confirm: "Confirm",
+                cancel: "Cancel",
+                rejectOrder: "Reject Order",
+                deleteOrderPermanently: "Delete Permanently",
+                makePayment: "Make Payment",
+                paymentHistory: "Payment History",
+                totalPaid: "Total Paid",
+                pendingAmount: "Pending Amount",
+                noPayments: "No payments",
+                paymentSuccess: "Payment completed successfully!",
+                invalidPaymentAmount: "Please enter a valid payment amount!",
+                searchFarmers: "Farmer Search",
+                searchFarmersPlaceholder: "Search by name, phone, email or location...",
+                clearSearch: "Clear Search",
+                searchResults: "Search Results:",
+                farmersFound: "farmers found",
+                noFarmersFound: "No farmers found",
+                searchFor: "Searching for:",
+                allFarmers: "All Farmers",
+                searchAll: "All Fields",
+                searchByName: "By Name",
+                searchByPhone: "By Phone",
+                searchByEmail: "By Email",
+                searchByLocation: "By Location",
+                sortNewest: "Newest First",
+                sortOldest: "Oldest First",
+                sortByName: "By Name",
+                sortByPayment: "By Payment",
+                quickSearch: "Quick Search:",
+                recentFarmers: "Recent Farmers",
+                pendingPayments: "Pending Payments",
+                highStipend: "High Stipend",
+                noPayment: "No Payments",
+                searching: "Searching...",
+                tryDifferentSearch: "Try a different search",
+                checkSpelling: "Check spelling or use fewer words"
+            }
+        };
+
+        // Current language
+        let currentLanguage = localStorage.getItem('adminLanguage') || 'bn';
+        let currentFilter = 'all';
+        let confirmationAction = null;
+        let confirmationData = null;
+        let currentPaymentFarmerId = null;
+        let allFarmers = [];
+        let filteredFarmers = [];
+        let currentSearchTerm = '';
+        let currentSearchFilter = 'all';
+        let currentSortFilter = 'newest';
+        let searchTimeout = null;
+
+        // Language switching function
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('adminLanguage', lang);
+            
+            // Update active language button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update all language content
+            updateLanguageContent();
+            updatePlaceholders();
+            
+            // Reload dynamic content
+            loadAdminPrices();
+            loadAllOrders();
+            loadFarmersTable();
+            loadCompaniesTable();
+        }
+
+        // Update language content
+        function updateLanguageContent() {
+            document.querySelectorAll('.lang-content').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (key && languageContent[currentLanguage] && languageContent[currentLanguage][key]) {
+                    element.textContent = languageContent[currentLanguage][key];
+                }
+            });
+
+            // Update select options
+            const orderFilter = document.getElementById('orderFilter');
+            if (orderFilter) {
+                orderFilter.innerHTML = `
+                    <option value="all">${languageContent[currentLanguage]['allOrders']}</option>
+                    <option value="pending">${languageContent[currentLanguage]['pending']}</option>
+                    <option value="confirmed">${languageContent[currentLanguage]['confirmed']}</option>
+                    <option value="rejected">${languageContent[currentLanguage]['rejected']}</option>
+                `;
+                orderFilter.value = currentFilter;
+            }
+
+            // Update search filter options
+            const searchFilter = document.getElementById('searchFilter');
+            if (searchFilter) {
+                searchFilter.innerHTML = `
+                    <option value="all">${languageContent[currentLanguage]['searchAll']}</option>
+                    <option value="name">${languageContent[currentLanguage]['searchByName']}</option>
+                    <option value="phone">${languageContent[currentLanguage]['searchByPhone']}</option>
+                    <option value="email">${languageContent[currentLanguage]['searchByEmail']}</option>
+                    <option value="location">${languageContent[currentLanguage]['searchByLocation']}</option>
+                `;
+                searchFilter.value = currentSearchFilter;
+            }
+
+            // Update sort filter options
+            const sortFilter = document.getElementById('sortFilter');
+            if (sortFilter) {
+                sortFilter.innerHTML = `
+                    <option value="newest">${languageContent[currentLanguage]['sortNewest']}</option>
+                    <option value="oldest">${languageContent[currentLanguage]['sortOldest']}</option>
+                    <option value="name">${languageContent[currentLanguage]['sortByName']}</option>
+                    <option value="payment">${languageContent[currentLanguage]['sortByPayment']}</option>
+                `;
+                sortFilter.value = currentSortFilter;
+            }
+        }
+
+        // Update placeholders
+        function updatePlaceholders() {
+            const placeholders = {
+                'newFarmerName': 'farmerNamePlaceholder',
+                'newFarmerPhone': 'phoneNumberPlaceholder',
+                'newFarmerEmail': 'emailPlaceholder',
+                'newFarmerLocation': 'locationPlaceholder',
+                'newFarmerBank': 'bankAccountPlaceholder',
+                'newFarmerIfsc': 'ifscPlaceholder',
+                'newCompanyName': 'companyNamePlaceholder',
+                'newCompanyOwner': 'ownerNamePlaceholder',
+                'newCompanyLocation': 'locationPlaceholder',
+                'newCompanyEmail': 'emailPlaceholder',
+                'newCompanyPhone': 'phoneNumberPlaceholder',
+                'newCompanyBank': 'bankAccountPlaceholder',
+                'farmerSearchInput': 'searchFarmersPlaceholder'
+            };
+
+            Object.keys(placeholders).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.placeholder = languageContent[currentLanguage][placeholders[id]];
+                }
+            });
+        }
+
+        // Enhanced search farmers function with debouncing
+        function searchFarmers() {
+            // Clear previous timeout
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+
+            // Show loading
+            showSearchLoading(true);
+
+            // Debounce search to improve performance
+            searchTimeout = setTimeout(() => {
+                performSearch();
+                showSearchLoading(false);
+            }, 300);
+        }
+
+        // Perform the actual search
+        function performSearch() {
+            const searchInput = document.getElementById('farmerSearchInput');
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const searchFilter = document.getElementById('searchFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const searchCount = document.getElementById('searchCount');
+            const searchTermDisplay = document.getElementById('searchTermDisplay');
+            
+            currentSearchTerm = searchTerm;
+            currentSearchFilter = searchFilter;
+            currentSortFilter = sortFilter;
+            
+            // Show/hide clear button
+            if (searchTerm) {
+                clearBtn.classList.add('show');
+                searchTermDisplay.textContent = `${languageContent[currentLanguage]['searchFor']} "${searchTerm}"`;
+            } else {
+                clearBtn.classList.remove('show');
+                searchTermDisplay.textContent = languageContent[currentLanguage]['allFarmers'];
+            }
+            
+            // Filter farmers based on search criteria
+            if (searchTerm) {
+                filteredFarmers = allFarmers.filter(farmer => {
+                    switch (searchFilter) {
+                        case 'name':
+                            return farmer.name.toLowerCase().includes(searchTerm);
+                        case 'phone':
+                            return farmer.phone.includes(searchTerm);
+                        case 'email':
+                            return farmer.email.toLowerCase().includes(searchTerm);
+                        case 'location':
+                            return farmer.location.toLowerCase().includes(searchTerm);
+                        default: // 'all'
+                            return farmer.name.toLowerCase().includes(searchTerm) ||
+                                   farmer.phone.includes(searchTerm) ||
+                                   farmer.email.toLowerCase().includes(searchTerm) ||
+                                   farmer.location.toLowerCase().includes(searchTerm);
+                    }
+                });
+            } else {
+                filteredFarmers = [...allFarmers];
+            }
+
+            // Sort farmers
+            sortFarmers(filteredFarmers, sortFilter);
+            
+            // Update search count
+            searchCount.textContent = filteredFarmers.length;
+            
+            // Render filtered farmers
+            renderFarmers(filteredFarmers, searchTerm);
+        }
+
+        // Sort farmers based on criteria
+        function sortFarmers(farmers, sortBy) {
+            const payments = JSON.parse(localStorage.getItem('farmerPayments') || '{}');
+            
+            farmers.sort((a, b) => {
+                switch (sortBy) {
+                    case 'newest':
+                        return new Date(b.registeredAt) - new Date(a.registeredAt);
+                    case 'oldest':
+                        return new Date(a.registeredAt) - new Date(b.registeredAt);
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'payment':
+                        const aPayments = payments[a.id] || [];
+                        const bPayments = payments[b.id] || [];
+                        const aTotalPaid = aPayments.reduce((sum, payment) => sum + payment.amount, 0);
+                        const bTotalPaid = bPayments.reduce((sum, payment) => sum + payment.amount, 0);
+                        return bTotalPaid - aTotalPaid;
+                    default:
+                        return 0;
+                }
+            });
+        }
+
+        // Quick search functionality
+        function quickSearch(type) {
+            const searchInput = document.getElementById('farmerSearchInput');
+            const payments = JSON.parse(localStorage.getItem('farmerPayments') || '{}');
+            
+            // Clear current search
+            searchInput.value = '';
+            currentSearchTerm = '';
+            
+            switch (type) {
+                case 'recent':
+                    // Show farmers registered in last 30 days
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                    filteredFarmers = allFarmers.filter(farmer => 
+                        new Date(farmer.registeredAt) > thirtyDaysAgo
+                    );
+                    document.getElementById('searchTermDisplay').textContent = languageContent[currentLanguage]['recentFarmers'];
+                    break;
+                    
+                case 'pending_payment':
+                    // Show farmers with pending payments
+                    filteredFarmers = allFarmers.filter(farmer => {
+                        const registrationDate = new Date(farmer.registeredAt);
+                        const now = new Date();
+                        const monthsSinceRegistration = Math.floor((now - registrationDate) / (1000 * 60 * 60 * 24 * 30));
+                        const totalStipend = Math.max(0, monthsSinceRegistration * 500);
+                        const farmerPayments = payments[farmer.id] || [];
+                        const totalPaid = farmerPayments.reduce((sum, payment) => sum + payment.amount, 0);
+                        return totalStipend > totalPaid;
+                    });
+                    document.getElementById('searchTermDisplay').textContent = languageContent[currentLanguage]['pendingPayments'];
+                    break;
+                    
+                case 'high_stipend':
+                    // Show farmers with stipend > 2000
+                    filteredFarmers = allFarmers.filter(farmer => {
+                        const registrationDate = new Date(farmer.registeredAt);
+                        const now = new Date();
+                        const monthsSinceRegistration = Math.floor((now - registrationDate) / (1000 * 60 * 60 * 24 * 30));
+                        const totalStipend = Math.max(0, monthsSinceRegistration * 500);
+                        return totalStipend > 2000;
+                    });
+                    document.getElementById('searchTermDisplay').textContent = languageContent[currentLanguage]['highStipend'];
+                    break;
+                    
+                case 'no_payment':
+                    // Show farmers with no payments
+                    filteredFarmers = allFarmers.filter(farmer => {
+                        const farmerPayments = payments[farmer.id] || [];
+                        return farmerPayments.length === 0;
+                    });
+                    document.getElementById('searchTermDisplay').textContent = languageContent[currentLanguage]['noPayment'];
+                    break;
+                    
+                default:
+                    filteredFarmers = [...allFarmers];
+                    document.getElementById('searchTermDisplay').textContent = languageContent[currentLanguage]['allFarmers'];
+            }
+            
+            // Update UI
+            document.getElementById('clearSearchBtn').classList.add('show');
+            document.getElementById('searchCount').textContent = filteredFarmers.length;
+            
+            // Sort and render
+            sortFarmers(filteredFarmers, currentSortFilter);
+            renderFarmers(filteredFarmers, '');
+        }
+
+        // Show/hide search loading
+        function showSearchLoading(show) {
+            const loadingElement = document.getElementById('searchLoading');
+            const farmersGrid = document.getElementById('farmersGrid');
+            
+            if (show) {
+                loadingElement.style.display = 'block';
+                farmersGrid.style.opacity = '0.5';
+            } else {
+                loadingElement.style.display = 'none';
+                farmersGrid.style.opacity = '1';
+            }
+        }
+
+        // Clear search function
+        function clearSearch() {
+            document.getElementById('farmerSearchInput').value = '';
+            document.getElementById('searchFilter').value = 'all';
+            document.getElementById('sortFilter').value = 'newest';
+            currentSearchTerm = '';
+            currentSearchFilter = 'all';
+            currentSortFilter = 'newest';
+            searchFarmers();
+            document.getElementById('farmerSearchInput').focus();
+        }
+
+        // Handle search keyup events
+        function handleSearchKeyup(event) {
+            if (event.key === 'Escape') {
+                clearSearch();
+            } else if (event.key === 'Enter') {
+                // Immediate search on Enter
+                if (searchTimeout) {
+                    clearTimeout(searchTimeout);
+                }
+                performSearch();
+                showSearchLoading(false);
+            }
+        }
+
+        // Highlight search terms in text
+        function highlightSearchTerm(text, searchTerm) {
+            if (!searchTerm) return text;
+            
+            const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            return text.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+
+        // Enhanced render farmers function
+        function renderFarmers(farmers, searchTerm = '') {
+            const payments = JSON.parse(localStorage.getItem('farmerPayments') || '{}');
+            const farmersGrid = document.getElementById('farmersGrid');
+            
+            farmersGrid.innerHTML = '';
+            
+            if (farmers.length === 0) {
+                const noResultsMessage = searchTerm ? 
+                    languageContent[currentLanguage]['noFarmersFound'] : 
+                    'কোনো কৃষক নিবন্ধিত নেই।';
+                
+                farmersGrid.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">🔍</div>
+                        <div class="no-results-text">${noResultsMessage}</div>
+                        ${searchTerm ? `
+                            <div class="no-results-suggestion">
+                                ${languageContent[currentLanguage]['tryDifferentSearch']}<br>
+                                ${languageContent[currentLanguage]['checkSpelling']}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                return;
+            }
+            
+            farmers.forEach(farmer => {
+                const registeredDate = new Date(farmer.registeredAt).toLocaleDateString();
+                
+                // Calculate stipend
+                const registrationDate = new Date(farmer.registeredAt);
+                const now = new Date();
+                const monthsSinceRegistration = Math.floor((now - registrationDate) / (1000 * 60 * 60 * 24 * 30));
+                const totalStipend = Math.max(0, monthsSinceRegistration * 500);
+                
+                // Get payment history
+                const farmerPayments = payments[farmer.id] || [];
+                const totalPaid = farmerPayments.reduce((sum, payment) => sum + payment.amount, 0);
+                const pendingAmount = totalStipend - totalPaid;
+                
+                // Generate payment history HTML
+                let paymentHistoryHTML = '';
+                if (farmerPayments.length > 0) {
+                    const recentPayments = farmerPayments.slice(-3).reverse(); // Show last 3 payments
+                    paymentHistoryHTML = recentPayments.map(payment => `
+                        <div class="payment-item">
+                            <span class="payment-amount">৳${payment.amount}</span>
+                            <span class="payment-date">${new Date(payment.date).toLocaleDateString()}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    paymentHistoryHTML = '<div class="no-payments">কোনো পেমেন্ট নেই</div>';
+                }
+                
+                const farmerCard = document.createElement('div');
+                farmerCard.className = 'farmer-card';
+                
+                // Add search match class if this farmer matches search
+                if (searchTerm) {
+                    farmerCard.classList.add('search-match');
+                }
+                
+                // Highlight search terms in farmer details
+                const highlightedName = highlightSearchTerm(farmer.name, searchTerm);
+                const highlightedPhone = highlightSearchTerm(farmer.phone, searchTerm);
+                const highlightedEmail = highlightSearchTerm(farmer.email, searchTerm);
+                const highlightedLocation = highlightSearchTerm(farmer.location, searchTerm);
+                
+                farmerCard.innerHTML = `
+                    <div class="farmer-header">
+                        <div class="farmer-name">${highlightedName}</div>
+                        <div class="farmer-id">ID: ${farmer.id}</div>
+                    </div>
+                    
+                    <div class="farmer-info">
+                        <div class="info-item">
+                            <div class="info-label">📱 ${languageContent[currentLanguage]['phone']}</div>
+                            <div class="info-value">${highlightedPhone}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">📧 ${languageContent[currentLanguage]['email']}</div>
+                            <div class="info-value">${highlightedEmail}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">📍 ${languageContent[currentLanguage]['location']}</div>
+                            <div class="info-value">${highlightedLocation}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">👤 স্ট্যাটাস</div>
+                            <div class="info-value" style="color: #4CAF50; font-weight: bold;">সক্রিয়</div>
+                        </div>
+                    </div>
+                    
+                    <div class="farmer-banking">
+                        <div class="banking-title">
+                            🏦 ব্যাংকিং তথ্য
+                        </div>
+                        <div class="banking-details">
+                            <div class="info-item">
+                                <div class="info-label">অ্যাকাউন্ট নম্বর</div>
+                                <div class="info-value">${farmer.bank || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">IFSC কোড</div>
+                                <div class="info-value">${farmer.ifsc || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-summary">
+                        <div class="payment-stat paid-stat">
+                            <div class="payment-stat-amount" style="color: #4CAF50;">৳${totalPaid}</div>
+                            <div class="payment-stat-label">পরিশোধিত</div>
+                        </div>
+                        <div class="payment-stat pending-stat">
+                            <div class="payment-stat-amount" style="color: #FF9800;">৳${pendingAmount}</div>
+                            <div class="payment-stat-label">বকেয়া</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stipend-info">
+                        <div class="stipend-amount">৳${totalStipend}</div>
+                        <div class="stipend-label">মোট স্টাইপেন</div>
+                    </div>
+                    
+                    <div class="payment-history">
+                        <div class="payment-history-title">
+                            💳 সাম্প্রতিক পেমেন্ট
+                        </div>
+                        ${paymentHistoryHTML}
+                    </div>
+                    
+                    <div class="registration-date">
+                        <div class="date-label">নিবন্ধনের তারিখ</div>
+                        <div class="date-value">${registeredDate}</div>
+                    </div>
+                    
+                    <div class="farmer-actions">
+                        <button class="btn btn-primary" onclick="openPaymentModal(${farmer.id})" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">
+                            💰 পেমেন্ট করুন
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteFarmer(${farmer.id})" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">
+                            🗑️ <span class="lang-content active" data-key="deleteFarmer">কৃষক মুছুন</span>
+                        </button>
+                    </div>
+                `;
+                
+                farmersGrid.appendChild(farmerCard);
+            });
+        }
+
+        // Check if admin is logged in
+        if (!localStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin-login.html';
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        // Tab switching function
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+        
+        // Load statistics
+        function loadStats() {
+            const farmers = JSON.parse(localStorage.getItem('farmers') || '[]');
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            document.getElementById('totalFarmers').textContent = farmers.length;
+            document.getElementById('totalCompanies').textContent = companies.length;
+            document.getElementById('totalOrders').textContent = orders.length;
+            document.getElementById('pendingOrders').textContent = orders.filter(o => o.status === 'pending').length;
+        }
+        
+        // Load admin price controls
+        function loadAdminPrices() {
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const adminPrices = JSON.parse(localStorage.getItem('adminPrices') || '{}');
+            
+            const products = ['minikit', 'kash', 'lalsonno'];
+            const productNames = {
+                'minikit': { bn: 'মিনিকিট', en: 'Minikit' },
+                'kash': { bn: 'কাশ', en: 'Kash' },
+                'lalsonno': { bn: 'লালসোনা', en: 'Lalsonno' }
+            };
+            
+            const priceGrid = document.getElementById('adminPriceGrid');
+            priceGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'price-card';
+                
+                // Get average company price
+                const companyPrices = companies.map(c => c.prices[product] || 0);
+                const avgPrice = companyPrices.length > 0 ? 
+                    Math.round(companyPrices.reduce((a, b) => a + b, 0) / companyPrices.length) : 0;
+                
+                const currentAdminPrice = adminPrices[product] || avgPrice;
+                
+                card.innerHTML = `
+                    <h4>${productNames[product][currentLanguage]}</h4>
+                    <div class="form-group">
+                        <label>${languageContent[currentLanguage]['averageCompanyPrice']} ৳${avgPrice}</label>
+                    </div>
+                    <div class="form-group">
+                        <label>${languageContent[currentLanguage]['priceShownToFarmers']}</label>
+                        <input type="number" id="adminPrice_${product}" value="${currentAdminPrice}" min="0" step="0.01">
+                    </div>
+                    <button class="btn" onclick="updateAdminPrice('${product}')">
+                        ${languageContent[currentLanguage]['updatePrice']}
+                    </button>
+                `;
+                
+                priceGrid.appendChild(card);
+            });
+        }
+        
+        // Update admin price
+        function updateAdminPrice(product) {
+            const newPrice = parseFloat(document.getElementById(`adminPrice_${product}`).value);
+            
+            if (isNaN(newPrice) || newPrice < 0) {
+                alert(languageContent[currentLanguage]['validPrice']);
+                return;
+            }
+            
+            const adminPrices = JSON.parse(localStorage.getItem('adminPrices') || '{}');
+            adminPrices[product] = newPrice;
+            localStorage.setItem('adminPrices', JSON.stringify(adminPrices));
+            
+            alert(languageContent[currentLanguage]['priceUpdateSuccess']);
+        }
+
+        // Filter orders
+        function filterOrders() {
+            currentFilter = document.getElementById('orderFilter').value;
+            loadAllOrders();
+        }
+        
+        // Load all orders with enhanced management features
+        function loadAllOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const ordersList = document.getElementById('allOrdersList');
+            
+            // Filter orders based on current filter
+            let filteredOrders = orders;
+            if (currentFilter !== 'all') {
+                filteredOrders = orders.filter(order => order.status === currentFilter);
+            }
+            
+            if (filteredOrders.length === 0) {
+                ordersList.innerHTML = `<p>${languageContent[currentLanguage]['noOrders']}</p>`;
+                return;
+            }
+            
+            ordersList.innerHTML = '';
+            
+            filteredOrders.reverse().forEach(order => {
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order-item';
+                
+                // Add blue color for paid orders
+                if (order.paymentStatus === 'completed') {
+                    orderDiv.style.background = 'linear-gradient(135deg, #e3f2fd, #bbdefb)';
+                    orderDiv.style.border = '2px solid #2196F3';
+                }
+                
+                let statusClass = 'status-pending';
+                let statusText = languageContent[currentLanguage]['pending'];
+                
+                if (order.status === 'confirmed') {
+                    statusClass = 'status-confirmed';
+                    statusText = languageContent[currentLanguage]['confirmed'];
+                } else if (order.status === 'rejected') {
+                    statusClass = 'status-rejected';
+                    statusText = languageContent[currentLanguage]['rejected'];
+                } else if (order.status === 'company_assigned') {
+                    statusClass = 'status-confirmed';
+                    statusText = 'কোম্পানি নির্বাচিত';
+                } else if (order.paymentStatus === 'completed') {
+                    statusClass = 'status-completed';
+                    statusText = 'পেমেন্ট সম্পন্ন';
+                }
+
+                // Show payment status if available
+                let paymentInfo = '';
+                if (order.paymentStatus === 'completed') {
+                    paymentInfo = `
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #4CAF50;">
+                            <strong>💰 পেমেন্ট সম্পন্ন:</strong><br>
+                            কোম্পানি: ${order.selectedCompany?.name || 'N/A'}<br>
+                            চূড়ান্ত দাম: ৳${order.finalTotalAmount || order.totalAmount}<br>
+                            পেমেন্ট তারিখ: ${order.paymentDate ? new Date(order.paymentDate).toLocaleDateString() : 'N/A'}
+                        </div>
+                    `;
+                }
+
+                // Create action buttons based on order status
+                let actionsHTML = '';
+                if (order.status === 'pending') {
+                    actionsHTML = `
+                        <div class="order-actions">
+                            <button class="btn btn-success" onclick="confirmOrder(${order.id})">
+                                ✅ ${languageContent[currentLanguage]['adminConfirm']}
+                            </button>
+                            <button class="btn btn-warning" onclick="rejectOrder(${order.id})">
+                                ❌ ${languageContent[currentLanguage]['adminReject']}
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteOrder(${order.id})">
+                                🗑️ ${languageContent[currentLanguage]['deleteOrder']}
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // For confirmed or rejected orders, only show delete option
+                    actionsHTML = `
+                        <div class="order-actions">
+                            <button class="btn btn-danger" onclick="deleteOrder(${order.id})">
+                                🗑️ ${languageContent[currentLanguage]['deleteOrder']}
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                orderDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4>${languageContent[currentLanguage]['order']} #${order.id}</h4>
+                        <span class="order-status ${statusClass}">${statusText}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div><strong>${languageContent[currentLanguage]['farmer']}</strong> ${order.farmerName}</div>
+                        <div><strong>${languageContent[currentLanguage]['farmerPhone']}</strong> ${order.farmerPhone}</div>
+                        <div><strong>${languageContent[currentLanguage]['company']}</strong> ${order.companyName}</div>
+                        <div><strong>${languageContent[currentLanguage]['product']}</strong> ${order.productName}</div>
+                        <div><strong>${languageContent[currentLanguage]['quantity']}</strong> ${order.quantity} ${languageContent[currentLanguage]['pieces']}</div>
+                        <div><strong>${languageContent[currentLanguage]['price']}</strong> ৳${order.price}</div>
+                        <div><strong>${languageContent[currentLanguage]['total']}</strong> ৳${order.totalAmount}</div>
+                        <div><strong>${languageContent[currentLanguage]['date']}</strong> ${order.date} ${order.time}</div>
+                    </div>
+                    <div style="margin-top: 1rem;"><strong>${languageContent[currentLanguage]['location']}:</strong> ${order.location}</div>
+                    ${paymentInfo}
+                    ${actionsHTML}
+                `;
+                
+                ordersList.appendChild(orderDiv);
+            });
+        }
+
+        // Confirmation modal functions
+        function showConfirmationModal(title, message, action, data) {
+            document.getElementById('confirmationTitle').textContent = title;
+            document.getElementById('confirmationMessage').textContent = message;
+            confirmationAction = action;
+            confirmationData = data;
+            document.getElementById('confirmationModal').style.display = 'block';
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+            confirmationAction = null;
+            confirmationData = null;
+        }
+
+        function executeConfirmedAction() {
+            if (confirmationAction && confirmationData) {
+                confirmationAction(confirmationData);
+            }
+            closeConfirmationModal();
+        }
+
+        // Payment modal functions
+        function openPaymentModal(farmerId) {
+            const farmers = JSON.parse(localStorage.getItem('farmers') || '[]');
+            const farmer = farmers.find(f => f.id === farmerId);
+            
+            if (!farmer) return;
+            
+            currentPaymentFarmerId = farmerId;
+            
+            // Calculate stipend info
+            const registrationDate = new Date(farmer.registeredAt);
+            const now = new Date();
+            const monthsSinceRegistration = Math.floor((now - registrationDate) / (1000 * 60 * 60 * 24 * 30));
+            const totalStipend = Math.max(0, monthsSinceRegistration * 500);
+            
+            // Get payment history
+            const payments = JSON.parse(localStorage.getItem('farmerPayments') || '{}');
+            const farmerPayments = payments[farmerId] || [];
+            const totalPaid = farmerPayments.reduce((sum, payment) => sum + payment.amount, 0);
+            const pendingAmount = totalStipend - totalPaid;
+            
+            // Populate farmer info
+            document.getElementById('paymentFarmerInfo').innerHTML = `
+                <h4>${farmer.name} (ID: ${farmer.id})</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                    <div><strong>মোট স্টাইপেন:</strong> ৳${totalStipend}</div>
+                    <div><strong>পরিশোধিত:</strong> ৳${totalPaid}</div>
+                    <div><strong>বকেয়া:</strong> ৳${pendingAmount}</div>
+                    <div><strong>ব্যাংক:</strong> ${farmer.bank}</div>
+                </div>
+            `;
+            
+            // Set suggested payment amount
+            document.getElementById('paymentAmount').value = pendingAmount > 0 ? pendingAmount : '';
+            
+            // Clear other fields
+            document.getElementById('paymentMethod').value = 'bank_transfer';
+            document.getElementById('paymentReference').value = '';
+            document.getElementById('paymentNote').value = '';
+            
+            document.getElementById('paymentModal').style.display = 'block';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            currentPaymentFarmerId = null;
+        }
+
+        function processPayment() {
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            const method = document.getElementById('paymentMethod').value;
+            const reference = document.getElementById('paymentReference').value;
+            const note = document.getElementById('paymentNote').value;
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert(languageContent[currentLanguage]['invalidPaymentAmount']);
+                return;
+            }
+            
+            // Get existing payments
+            const payments = JSON.parse(localStorage.getItem('farmerPayments') || '{}');
+            if (!payments[currentPaymentFarmerId]) {
+                payments[currentPaymentFarmerId] = [];
+            }
+            
+            // Add new payment
+            const newPayment = {
+                id: Date.now(),
+                amount: amount,
+                method: method,
+                reference: reference,
+                note: note,
+                date: new Date().toISOString(),
+                processedBy: 'admin'
+            };
+            
+            payments[currentPaymentFarmerId].push(newPayment);
+            localStorage.setItem('farmerPayments', JSON.stringify(payments));
+            
+            alert(languageContent[currentLanguage]['paymentSuccess']);
+            closePaymentModal();
+            loadFarmersTable(); // Refresh the farmers table
+        }
+
+        // Confirm order function
+        function confirmOrder(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const orderIndex = orders.findIndex(order => order.id === orderId);
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].status = 'confirmed';
+                orders[orderIndex].confirmedBy = 'admin';
+                orders[orderIndex].confirmedAt = new Date().toISOString();
+                localStorage.setItem('orders', JSON.stringify(orders));
+                
+                showMessage(languageContent[currentLanguage]['orderConfirmedByAdmin'], 'success');
+                loadAllOrders();
+                loadStats();
+            }
+        }
+
+        // Reject order function
+        function rejectOrder(orderId) {
+            showConfirmationModal(
+                languageContent[currentLanguage]['rejectOrder'],
+                languageContent[currentLanguage]['confirmRejectOrder'],
+                function(id) {
+                    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+                    const orderIndex = orders.findIndex(order => order.id === id);
+                    
+                    if (orderIndex !== -1) {
+                        orders[orderIndex].status = 'rejected';
+                        orders[orderIndex].rejectedBy = 'admin';
+                        orders[orderIndex].rejectedAt = new Date().toISOString();
+                        localStorage.setItem('orders', JSON.stringify(orders));
+                        
+                        showMessage(languageContent[currentLanguage]['orderRejectedByAdmin'], 'warning');
+                        loadAllOrders();
+                        loadStats();
+                    }
+                },
+                orderId
+            );
+        }
+
+        // Delete order function
+        function deleteOrder(orderId) {
+            showConfirmationModal(
+                languageContent[currentLanguage]['deleteOrderPermanently'],
+                languageContent[currentLanguage]['confirmDeleteOrder'],
+                function(id) {
+                    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+                    const updatedOrders = orders.filter(order => order.id !== id);
+                    localStorage.setItem('orders', JSON.stringify(updatedOrders));
+                    
+                    showMessage(languageContent[currentLanguage]['orderDeletedByAdmin'], 'error');
+                    loadAllOrders();
+                    loadStats();
+                },
+                orderId
+            );
+        }
+
+        // Show message function
+        function showMessage(message, type) {
+            // Remove existing messages
+            const existingMessages = document.querySelectorAll('.message');
+            existingMessages.forEach(msg => msg.remove());
+
+            // Create new message
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            
+            // Insert at the top of the container
+            const container = document.querySelector('.container');
+            container.insertBefore(messageDiv, container.firstChild);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+        
+        // Update the loadFarmersTable function
+        function loadFarmersTable() {
+            allFarmers = JSON.parse(localStorage.getItem('farmers') || '[]');
+            
+            // If there's an active search, maintain it
+            if (currentSearchTerm || document.getElementById('clearSearchBtn').classList.contains('show')) {
+                performSearch();
+            } else {
+                filteredFarmers = [...allFarmers];
+                sortFarmers(filteredFarmers, currentSortFilter);
+                renderFarmers(filteredFarmers);
+                
+                // Update search count
+                document.getElementById('searchCount').textContent = allFarmers.length;
+                document.getElementById('searchTermDisplay').textContent = languageContent[currentLanguage]['allFarmers'];
+            }
+        }
+        
+        // Load companies table
+        function loadCompaniesTable() {
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const tbody = document.getElementById('companiesTable');
+            
+            tbody.innerHTML = '';
+            
+            companies.forEach(company => {
+                const row = document.createElement('tr');
+                const registeredDate = new Date(company.registeredAt).toLocaleDateString();
+                const expiryDate = new Date(company.subscriptionExpiry);
+                const now = new Date();
+                const isExpired = now > expiryDate;
+                
+                let subscriptionStatus = '';
+                let statusClass = '';
+                
+                if (company.subscription === 'active') {
+                    subscriptionStatus = languageContent[currentLanguage]['active'];
+                    statusClass = 'status-confirmed';
+                } else if (company.subscription === 'trial') {
+                    subscriptionStatus = languageContent[currentLanguage]['trial'];
+                    statusClass = isExpired ? 'status-rejected' : 'status-pending';
+                } else {
+                    subscriptionStatus = languageContent[currentLanguage]['inactive'];
+                    statusClass = 'status-rejected';
+                }
+                
+                row.innerHTML = `
+                    <td>${company.id}</td>
+                    <td>${company.name}</td>
+                    <td>${company.owner}</td>
+                    <td>${company.location}</td>
+                    <td>${company.phone}</td>
+                    <td><span class="order-status ${statusClass}">${subscriptionStatus}</span></td>
+                    <td>${registeredDate}</td>
+                    <td>${expiryDate.toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn" onclick="manageCompanySubscription(${company.id})" style="padding: 0.5rem; font-size: 0.8rem; margin-right: 0.5rem;">
+                            ${languageContent[currentLanguage]['manage'] || 'পরিচালনা'}
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteCompany(${company.id})" style="padding: 0.5rem; font-size: 0.8rem;">
+                            <span class="lang-content active" data-key="deleteCompany">কোম্পানি মুছুন</span>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Add new farmer
+        function addFarmer() {
+            const name = document.getElementById('newFarmerName').value;
+            const phone = document.getElementById('newFarmerPhone').value;
+            const email = document.getElementById('newFarmerEmail').value;
+            const location = document.getElementById('newFarmerLocation').value;
+            const bank = document.getElementById('newFarmerBank').value;
+            const ifsc = document.getElementById('newFarmerIfsc').value;
+            
+            if (!name || !phone || !email || !location || !bank || !ifsc) {
+                alert(languageContent[currentLanguage]['fillAllInfo']);
+                return;
+            }
+            
+            const farmers = JSON.parse(localStorage.getItem('farmers') || '[]');
+            
+            // Check if farmer already exists
+            if (farmers.find(f => f.email === email || f.phone === phone)) {
+                alert(languageContent[currentLanguage]['alreadyRegistered']);
+                return;
+            }
+            
+            const newFarmer = {
+                id: Date.now(),
+                name,
+                phone,
+                email,
+                location,
+                bank,
+                ifsc,
+                registeredAt: new Date().toISOString()
+            };
+            
+            farmers.push(newFarmer);
+            localStorage.setItem('farmers', JSON.stringify(farmers));
+            
+            // Clear form
+            document.getElementById('newFarmerName').value = '';
+            document.getElementById('newFarmerPhone').value = '';
+            document.getElementById('newFarmerEmail').value = '';
+            document.getElementById('newFarmerLocation').value = '';
+            document.getElementById('newFarmerBank').value = '';
+            document.getElementById('newFarmerIfsc').value = '';
+            
+            alert(languageContent[currentLanguage]['farmerAddSuccess']);
+            loadFarmersTable();
+            loadStats();
+        }
+        
+        // Add new company
+        function addCompany() {
+            const name = document.getElementById('newCompanyName').value;
+            const owner = document.getElementById('newCompanyOwner').value;
+            const location = document.getElementById('newCompanyLocation').value;
+            const email = document.getElementById('newCompanyEmail').value;
+            const phone = document.getElementById('newCompanyPhone').value;
+            const bank = document.getElementById('newCompanyBank').value;
+            
+            if (!name || !owner || !location || !email || !phone || !bank) {
+                alert(languageContent[currentLanguage]['fillAllInfo']);
+                return;
+            }
+            
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            
+            // Check if company already exists
+            if (companies.find(c => c.email === email || c.phone === phone)) {
+                alert(languageContent[currentLanguage]['alreadyRegistered']);
+                return;
+            }
+            
+            const newCompany = {
+                id: Date.now(),
+                name,
+                owner,
+                location,
+                email,
+                phone,
+                bank,
+                subscription: 'active',
+                subscriptionExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                prices: {
+                    minikit: 1500,
+                    kash: 3000,
+                    lalsonno: 1350
+                },
+                registeredAt: new Date().toISOString()
+            };
+            
+            companies.push(newCompany);
+            localStorage.setItem('companies', JSON.stringify(companies));
+            
+            // Clear form
+            document.getElementById('newCompanyName').value = '';
+            document.getElementById('newCompanyOwner').value = '';
+            document.getElementById('newCompanyLocation').value = '';
+            document.getElementById('newCompanyEmail').value = '';
+            document.getElementById('newCompanyPhone').value = '';
+            document.getElementById('newCompanyBank').value = '';
+            
+            alert(languageContent[currentLanguage]['companyAddSuccess']);
+            loadCompaniesTable();
+            loadStats();
+        }
+        
+        // Create orders chart
+        function createOrdersChart() {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            // Group orders by status
+            const statusCounts = {
+                [languageContent[currentLanguage]['pending']]: orders.filter(o => o.status === 'pending').length,
+                [languageContent[currentLanguage]['confirmed']]: orders.filter(o => o.status === 'confirmed').length,
+                [languageContent[currentLanguage]['rejected']]: orders.filter(o => o.status === 'rejected').length
+            };
+            
+            const ctx = document.getElementById('ordersChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(statusCounts),
+                    datasets: [{
+                        data: Object.values(statusCounts),
+                        backgroundColor: [
+                            '#FFC107',
+                            '#4CAF50',
+                            '#F44336'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: languageContent[currentLanguage]['dataChart'],
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            color: '#000000'
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#000000',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminLanguage');
+            window.location.href = 'index.html';
+        }
+
+        function manageCompanySubscription(companyId) {
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const company = companies.find(c => c.id === companyId);
+            
+            if (!company) return;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+                    <h3>${company.name} - সাবস্ক্রিপশন পরিচালনা</h3>
+                    
+                    <div class="form-group">
+                        <label>বর্তমান স্ট্যাটাস:</label>
+                        <select id="subscriptionStatus_${companyId}">
+                            <option value="active" ${company.subscription === 'active' ? 'selected' : ''}>সক্রিয়</option>
+                            <option value="trial" ${company.subscription === 'trial' ? 'selected' : ''}>ট্রায়াল</option>
+                            <option value="expired" ${company.subscription === 'expired' ? 'selected' : ''}>মেয়াদ শেষ</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>মেয়াদ শেষের তারিখ:</label>
+                        <input type="date" id="expiryDate_${companyId}" value="${new Date(company.subscriptionExpiry).toISOString().split('T')[0]}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>নোট:</label>
+                        <textarea id="adminNote_${companyId}" placeholder="অ্যাডমিন নোট..." rows="3" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="updateCompanySubscription(${companyId})">আপডেট করুন</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function updateCompanySubscription(companyId) {
+            const newStatus = document.getElementById(`subscriptionStatus_${companyId}`).value;
+            const newExpiry = document.getElementById(`expiryDate_${companyId}`).value;
+            const adminNote = document.getElementById(`adminNote_${companyId}`).value;
+            
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const companyIndex = companies.findIndex(c => c.id === companyId);
+            
+            if (companyIndex !== -1) {
+                companies[companyIndex].subscription = newStatus;
+                companies[companyIndex].subscriptionExpiry = new Date(newExpiry).toISOString();
+                companies[companyIndex].adminNote = adminNote;
+                companies[companyIndex].lastUpdatedBy = 'admin';
+                companies[companyIndex].lastUpdatedAt = new Date().toISOString();
+                
+                localStorage.setItem('companies', JSON.stringify(companies));
+                
+                alert('কোম্পানির সাবস্ক্রিপশন আপডেট করা হয়েছে!');
+                
+                // Close modal
+                document.querySelector('.modal').remove();
+                
+                // Reload table
+                loadCompaniesTable();
+            }
+        }
+
+        // Delete farmer function
+        function deleteFarmer(farmerId) {
+            if (!confirm(languageContent[currentLanguage]['confirmDelete'])) {
+                return;
+            }
+            
+            const farmers = JSON.parse(localStorage.getItem('farmers') || '[]');
+            const updatedFarmers = farmers.filter(farmer => farmer.id !== farmerId);
+            
+            localStorage.setItem('farmers', JSON.stringify(updatedFarmers));
+            
+            // Also remove any orders from this farmer
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const updatedOrders = orders.filter(order => order.farmerId !== farmerId);
+            localStorage.setItem('orders', JSON.stringify(updatedOrders));
+            
+            // Remove payment history for this farmer
+            const payments = JSON.parse(localStorage.getItem('farmerPayments') || '{}');
+            delete payments[farmerId];
+            localStorage.setItem('farmerPayments', JSON.stringify(payments));
+            
+            alert(languageContent[currentLanguage]['farmerDeleteSuccess']);
+            loadFarmersTable();
+            loadStats();
+            loadAllOrders();
+        }
+
+        // Delete company function
+        function deleteCompany(companyId) {
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const company = companies.find(c => c.id === companyId);
+            
+            if (!company) return;
+            
+            const confirmMessage = currentLanguage === 'bn' ? 
+                `আপনি কি নিশ্চিত যে "${company.name}" কোম্পানিটি মুছে দিতে চান?` :
+                `Are you sure you want to delete "${company.name}" company?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            // Remove company from companies array
+            const updatedCompanies = companies.filter(c => c.id !== companyId);
+            localStorage.setItem('companies', JSON.stringify(updatedCompanies));
+            
+            // Also remove any orders from this company
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const updatedOrders = orders.filter(order => order.companyId !== companyId);
+            localStorage.setItem('orders', JSON.stringify(updatedOrders));
+            
+            const successMessage = currentLanguage === 'bn' ? 
+                'কোম্পানি সফলভাবে মুছে দেওয়া হয়েছে!' :
+                'Company deleted successfully!';
+            
+            alert(successMessage);
+            loadCompaniesTable();
+            loadStats();
+            loadAllOrders();
+        }
+
+        // Initialize dashboard
+        function initializeDashboard() {
+            // Set language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((currentLanguage === 'bn' && btn.textContent === 'বাংলা') || 
+                    (currentLanguage === 'en' && btn.textContent === 'English')) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            updateLanguageContent();
+            updatePlaceholders();
+            loadStats();
+            loadAdminPrices();
+            loadAllOrders();
+            loadFarmersTable();
+            loadCompaniesTable();
+            createOrdersChart();
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const confirmationModal = document.getElementById('confirmationModal');
+            const paymentModal = document.getElementById('paymentModal');
+            
+            if (event.target === confirmationModal) {
+                closeConfirmationModal();
+            }
+            if (event.target === paymentModal) {
+                closePaymentModal();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কৃষক লগইন - কৃষিসেতু</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Bengali', Arial, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A), url('https://images.pexels.com/photos/1509607/pexels-photo-1509607.jpeg');
+            background-blend-mode: overlay;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            color: #4CAF50;
+            margin-bottom: 0.5rem;
+        }
+
+        .language-switcher {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background-color: #f0f0f0;
+            color: #333;
+            cursor: pointer;
+            margin: 0 0.25rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .lang-btn.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .tab:not(.active) {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        
+        .btn:hover {
+            background: #45a049;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .back-link a {
+            color: #666;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .back-link a:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .success {
+            color: green;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .lang-content {
+            display: none;
+        }
+
+        .lang-content.active {
+            display: inline !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">👨‍🌾 <span class="lang-content active" data-lang="bn">কৃষক প্যানেল</span><span class="lang-content" data-lang="en">Farmer Panel</span></div>
+        </div>
+
+        <div class="stypen-info" style="background: #e8f5e8; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid #4CAF50;">
+            <h4 style="color: #2e7d32; margin-bottom: 0.5rem;">
+                <span class="lang-content active" data-lang="bn">🎉 বিশেষ সুবিধা!</span>
+                <span class="lang-content" data-lang="en">🎉 Special Benefits!</span>
+            </h4>
+            <p style="color: #2e7d32; font-size: 0.9rem;">
+                <span class="lang-content active" data-lang="bn">নিবন্ধনের পর প্রতি মাসে ৫০০ টাকা স্টাইপেন পাবেন!</span>
+                <span class="lang-content" data-lang="en">Get ৳500 monthly stipend after registration!</span>
+            </p>
+        </div>
+
+        <div class="language-switcher">
+            <button class="lang-btn active" onclick="changeLanguage('bn')">বাং</button>
+            <button class="lang-btn" onclick="changeLanguage('en')">EN</button>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showLogin()"><span class="lang-content active" data-lang="bn">লগইন</span><span class="lang-content" data-lang="en">Login</span></button>
+            <button class="tab" onclick="showRegister()"><span class="lang-content active" data-lang="bn">নিবন্ধন</span><span class="lang-content" data-lang="en">Register</span></button>
+        </div>
+        
+        <!-- Login Form -->
+        <div id="loginForm">
+            <form onsubmit="farmerLogin(event)">
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">ইমেইল:</span><span class="lang-content" data-lang="en">Email:</span></label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">ফোন নম্বর:</span><span class="lang-content" data-lang="en">Phone Number:</span></label>
+                    <input type="tel" id="loginPhone" required>
+                </div>
+                <button type="submit" class="btn"><span class="lang-content active" data-lang="bn">লগইন করুন</span><span class="lang-content" data-lang="en">Login</span></button>
+                <div id="loginError" class="error"></div>
+            </form>
+        </div>
+        
+        <!-- Registration Form -->
+        <div id="registerForm" class="hidden">
+            <div class="stypen-info" style="background: #e8f5e8; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid #4CAF50;">
+                <h4 style="color: #2e7d32; margin-bottom: 0.5rem;">
+                    <span class="lang-content active" data-lang="bn">🎉 বিশেষ সুবিধা!</span>
+                    <span class="lang-content" data-lang="en">🎉 Special Benefits!</span>
+                </h4>
+                <p style="color: #2e7d32; font-size: 0.9rem;">
+                    <span class="lang-content active" data-lang="bn">নিবন্ধনের পর প্রতি মাসে ৫০০ টাকা স্টাইপেন পাবেন!</span>
+                    <span class="lang-content" data-lang="en">Get ৳500 monthly stipend after registration!</span>
+                </p>
+            </div>
+            <form onsubmit="farmerRegister(event)">
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">নাম:</span><span class="lang-content" data-lang="en">Name:</span></label>
+                    <input type="text" id="regName" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">ফোন নম্বর:</span><span class="lang-content" data-lang="en">Phone Number:</span></label>
+                    <input type="tel" id="regPhone" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">ইমেইল:</span><span class="lang-content" data-lang="en">Email:</span></label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">এলাকা:</span><span class="lang-content" data-lang="en">Location:</span></label>
+                    <input type="text" id="regLocation" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">ব্যাংক অ্যাকাউন্ট নম্বর:</span><span class="lang-content" data-lang="en">Bank Account Number:</span></label>
+                    <input type="text" id="regBank" required>
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-content active" data-lang="bn">IFSC কোড:</span><span class="lang-content" data-lang="en">IFSC Code:</span></label>
+                    <input type="text" id="regIfsc" required placeholder="SBIN0001234">
+                </div>
+                <button type="submit" class="btn"><span class="lang-content active" data-lang="bn">নিবন্ধন করুন</span><span class="lang-content" data-lang="en">Register</span></button>
+                <div id="registerError" class="error"></div>
+                <div id="registerSuccess" class="success"></div>
+            </form>
+        </div>
+        
+        <div class="back-link">
+            <a href="login-selection.html">← <span class="lang-content active" data-lang="bn">পূর্ববর্তী পাতায় ফিরে যান</span><span class="lang-content" data-lang="en">Go Back</span></a>
+        </div>
+    </div>
+
+    <script>
+        let currentLanguage = 'bn';
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show/hide language content
+            document.querySelectorAll('.lang-content').forEach(content => {
+                content.classList.remove('active');
+                if (content.getAttribute('data-lang') === lang) {
+                    content.classList.add('active');
+                }
+            });
+
+            // Store language preference
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        function loadLanguagePreference() {
+            const savedLang = localStorage.getItem('preferred_language');
+            if (savedLang && savedLang !== 'bn') {
+                const langButton = document.querySelector(`.lang-btn[onclick="changeLanguage('${savedLang}')"]`);
+                if (langButton) {
+                    langButton.click();
+                }
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.querySelectorAll('.tab')[0].classList.add('active');
+            document.querySelectorAll('.tab')[1].classList.remove('active');
+        }
+        
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.querySelectorAll('.tab')[0].classList.remove('active');
+            document.querySelectorAll('.tab')[1].classList.add('active');
+        }
+        
+        function farmerLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const phone = document.getElementById('loginPhone').value;
+            
+            const farmers = JSON.parse(localStorage.getItem('farmers') || '[]');
+            const farmer = farmers.find(f => f.email === email && f.phone === phone);
+            
+            if (farmer) {
+                localStorage.setItem('currentFarmer', JSON.stringify(farmer));
+                window.location.href = 'farmer-dashboard.html';
+            } else {
+                let errorMessage = currentLanguage === 'bn' ? 'ভুল ইমেইল বা ফোন নম্বর!' : 'Incorrect email or phone number!';
+                document.getElementById('loginError').textContent = errorMessage;
+            }
+        }
+        
+        function farmerRegister(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('regName').value;
+            const phone = document.getElementById('regPhone').value;
+            const email = document.getElementById('regEmail').value;
+            const location = document.getElementById('regLocation').value;
+            const bank = document.getElementById('regBank').value;
+            const ifsc = document.getElementById('regIfsc').value;
+            
+            const farmers = JSON.parse(localStorage.getItem('farmers') || '[]');
+            
+            // Check if farmer already exists
+            if (farmers.find(f => f.email === email || f.phone === phone)) {
+                let errorMessage = currentLanguage === 'bn' ? 'এই ইমেইল বা ফোন নম্বর দিয়ে ইতিমধ্যে নিবন্ধন করা হয়েছে!' : 'This email or phone number is already registered!';
+                document.getElementById('registerError').textContent = errorMessage;
+                return;
+            }
+            
+            const newFarmer = {
+                id: Date.now(),
+                name,
+                phone,
+                email,
+                location,
+                bank,
+                ifsc,
+                registeredAt: new Date().toISOString()
+            };
+            
+            farmers.push(newFarmer);
+            localStorage.setItem('farmers', JSON.stringify(farmers));
+            
+            let successMessage = currentLanguage === 'bn' ? 'সফলভাবে নিবন্ধন সম্পন্ন হয়েছে! এখন লগইন করুন।' : 'Registration successful! Please log in now.';
+            document.getElementById('registerSuccess').textContent = successMessage;
+            document.getElementById('registerError').textContent = '';
+            
+            // Clear form
+            document.getElementById('regName').value = '';
+            document.getElementById('regPhone').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regLocation').value = '';
+            document.getElementById('regBank').value = '';
+            document.getElementById('regIfsc').value = '';
+            
+            // Switch to login tab after 2 seconds
+            setTimeout(() => {
+                showLogin();
+                document.getElementById('registerSuccess').textContent = '';
+            }, 2000);
+        }
+
+        // Initialize
+        loadLanguagePreference();
+    </script>
+
+<script>
+function loginUser() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const role = "farmer";
+
+    fetch("http://127.0.0.1:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, role })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "farmer-dashboard.html";
+        } else {
+            alert(data.message);
+        }
+    });
+}
+</script>
+
+</body>
+</html>

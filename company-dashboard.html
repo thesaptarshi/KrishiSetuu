@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কোম্পানি ড্যাশবোর্ড - কৃষিসেতু</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Bengali', Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: #2196F3;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logout-btn, .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .welcome-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .subscription-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .subscription-status {
+            background: #e3f2fd;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .subscription-expired {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .subscription-warning {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .plan-card {
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            background: white;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .plan-card:hover {
+            border-color: #2196F3;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .plan-card.popular {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #f8fff8, #e8f5e8);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2196F3;
+            margin: 1rem 0;
+        }
+        
+        .plan-savings {
+            color: #4CAF50;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+        
+        .plan-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .plan-features li:before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: #1976D2;
+            transform: translateY(-2px);
+        }
+        
+        .price-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .price-card {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .current-price {
+            font-size: 2rem;
+            color: #2196F3;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .update-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+        }
+        
+        .orders-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .order-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .order-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-company-assigned {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-completed {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 2px solid #4CAF50;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .payment-instructions {
+            background: #e3f2fd;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+        
+        .payment-instructions h4 {
+            margin-bottom: 0.5rem;
+            color: #1976D2;
+        }
+        
+        .payment-instructions ol {
+            margin-left: 1rem;
+        }
+        
+        .payment-instructions li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <a href="index.html" class="back-btn">← পূর্ববর্তী</a>
+            <div class="logo">🏢 কৃষিসেতু</div>
+        </div>
+        <div class="user-info">
+            <span id="companyName">কোম্পানি</span>
+            <button class="logout-btn" onclick="logout()">লগআউট</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="welcome-card">
+            <h2>স্বাগতম, <span id="welcomeName"></span>!</h2>
+            <p>আপনার পণ্যের দাম আপডেট করুন এবং অর্ডার পরিচালনা করুন</p>
+        </div>
+        
+         Subscription Status 
+        <div class="subscription-status" id="subscriptionStatus">
+             Will be populated by JavaScript 
+        </div>
+        
+         Subscription Plans 
+        <div class="subscription-section">
+            <h3>💳 সাবস্ক্রিপশন প্ল্যান</h3>
+            <div class="plans-grid">
+                <div class="plan-card">
+                    <h4>১ মাস প্ল্যান</h4>
+                    <div class="plan-price">৳৯৯৯</div>
+                    <ul class="plan-features">
+                        <li>সব ফিচার ব্যবহার</li>
+                        <li>অসীমিত অর্ডার</li>
+                        <li>২৪/৭ সাপোর্ট</li>
+                        <li>দাম আপডেট</li>
+                    </ul>
+                    <button class="btn" onclick="selectPlan('1month', 999)">নির্বাচন করুন</button>
+                </div>
+                
+                <div class="plan-card popular">
+                    <div class="popular-badge">জনপ্রিয়</div>
+                    <h4>৩ মাস প্ল্যান</h4>
+                    <div class="plan-price">৳২৪৯৯</div>
+                    <div class="plan-savings">৫০০ টাকা সাশ্রয়!</div>
+                    <ul class="plan-features">
+                        <li>সব ফিচার ব্যবহার</li>
+                        <li>অসীমিত অর্ডার</li>
+                        <li>অগ্রাধিকার সাপোর্ট</li>
+                        <li>অ্যানালিটিক্স</li>
+                    </ul>
+                    <button class="btn" onclick="selectPlan('3months', 2499)">নির্বাচন করুন</button>
+                </div>
+                
+                <div class="plan-card">
+                    <h4>১ বছর প্ল্যান</h4>
+                    <div class="plan-price">৳৯৯৯৯</div>
+                    <div class="plan-savings">২০০০ টাকা সাশ্রয়!</div>
+                    <ul class="plan-features">
+                        <li>সব ফিচার ব্যবহার</li>
+                        <li>বিশেষ ছাড় ও অফার</li>
+                        <li>ডেডিকেটেড সাপোর্ট</li>
+                        <li>কাস্টম রিপোর্ট</li>
+                    </ul>
+                    <button class="btn" onclick="selectPlan('1year', 9999)">নির্বাচন করুন</button>
+                </div>
+            </div>
+        </div>
+        
+         Price Management 
+        <div class="price-section">
+            <h3>💰 পণ্যের দাম আপডেট করুন</h3>
+            <div class="price-grid" id="priceGrid">
+                 Price cards will be populated by JavaScript 
+            </div>
+        </div>
+        
+         Orders - STEP 5: Company sees assigned orders 
+        <div class="orders-section">
+            <h3>📋 আমার কোম্পানির অর্ডারসমূহ</h3>
+            <p>কর্মচারী কর্তৃক আপনার কোম্পানিতে নির্ধারিত অর্ডারসমূহ</p>
+            <div id="ordersList">
+                 Orders will be populated by JavaScript 
+            </div>
+        </div>
+    </div>
+    
+     Payment Modal 
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePaymentModal()">&times;</span>
+            <h3>💳 পেমেন্ট করুন</h3>
+            
+            <div class="form-group">
+                <label>নির্বাচিত প্ল্যান:</label>
+                <input type="text" id="selectedPlan" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label>মোট পরিমাণ:</label>
+                <input type="text" id="totalAmount" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label>পেমেন্ট পদ্ধতি:</label>
+                <select id="paymentMethod">
+                    <option value="bkash">বিকাশ - 01711-123456</option>
+                    <option value="nagad">নগদ - 01722-123456</option>
+                    <option value="rocket">রকেট - 01733-123456</option>
+                    <option value="bank">ব্যাংক ট্রান্সফার - Dutch Bangla Bank</option>
+                </select>
+            </div>
+            
+            <div class="payment-instructions">
+                <h4>পেমেন্ট নির্দেশনা:</h4>
+                <ol>
+                    <li>উপরের নম্বরে টাকা পাঠান</li>
+                    <li>ট্রানজেকশন আইডি কপি করুন</li>
+                    <li>নিচে ট্রানজেকশন আইডি দিন</li>
+                    <li>নিশ্চিত করুন বাটনে ক্লিক করুন</li>
+                </ol>
+            </div>
+            
+            <div class="form-group">
+                <label>ট্রানজেকশন আইডি:</label>
+                <input type="text" id="transactionId" placeholder="পেমেন্ট করার পর ট্রানজেকশন আইডি দিন" required>
+            </div>
+            
+            <button class="btn" onclick="processPayment()">পেমেন্ট নিশ্চিত করুন</button>
+        </div>
+    </div>
+
+    <script>
+        // Check if company is logged in
+        const currentCompany = JSON.parse(localStorage.getItem('currentCompany'));
+        if (!currentCompany) {
+            window.location.href = 'company-login.html';
+        }
+        
+        // Display company name
+        document.getElementById('companyName').textContent = currentCompany.name;
+        document.getElementById('welcomeName').textContent = currentCompany.name;
+        
+        // Load subscription status
+        function loadSubscriptionStatus() {
+            const now = new Date();
+            const expiryDate = new Date(currentCompany.subscriptionExpiry);
+            const daysLeft = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+            
+            const statusDiv = document.getElementById('subscriptionStatus');
+            
+            if (currentCompany.subscription === 'active' && now < expiryDate) {
+                statusDiv.className = 'subscription-status';
+                statusDiv.innerHTML = `
+                    <h3>✅ সাবস্ক্রিপশন সক্রিয়</h3>
+                    <p>মেয়াদ শেষ: ${expiryDate.toLocaleDateString()} (${daysLeft} দিন বাকি)</p>
+                `;
+            } else if (currentCompany.subscription === 'trial' && now < expiryDate) {
+                statusDiv.className = 'subscription-status subscription-warning';
+                statusDiv.innerHTML = `
+                    <h3>🔄 ট্রায়াল পিরিয়ড</h3>
+                    <p>মেয়াদ শেষ: ${expiryDate.toLocaleDateString()} (${daysLeft} দিন বাকি)</p>
+                    <p>সেবা অব্যাহত রাখতে সাবস্ক্রিপশন কিনুন।</p>
+                `;
+            } else {
+                statusDiv.className = 'subscription-status subscription-expired';
+                statusDiv.innerHTML = `
+                    <h3>❌ সাবস্ক্রিপশন মেয়াদ শেষ</h3>
+                    <p>সেবা চালু রাখতে নবায়ন করুন।</p>
+                `;
+            }
+        }
+        
+        // Select subscription plan
+        function selectPlan(planType, amount) {
+            const planNames = {
+                '1month': '১ মাস প্ল্যান',
+                '3months': '৩ মাস প্ল্যান',
+                '1year': '১ বছর প্ল্যান'
+            };
+            
+            document.getElementById('selectedPlan').value = planNames[planType];
+            document.getElementById('totalAmount').value = '৳' + amount;
+            
+            // Store selected plan data
+            window.selectedPlan = { type: planType, amount: amount };
+            
+            document.getElementById('paymentModal').style.display = 'block';
+        }
+        
+        // Close payment modal
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            document.getElementById('transactionId').value = '';
+        }
+        
+        // Process payment
+        function processPayment() {
+            const transactionId = document.getElementById('transactionId').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            if (!transactionId) {
+                alert('ট্রানজেকশন আইডি দিন!');
+                return;
+            }
+            
+            // Calculate new expiry date
+            let monthsToAdd = 0;
+            switch(window.selectedPlan.type) {
+                case '1month': monthsToAdd = 1; break;
+                case '3months': monthsToAdd = 3; break;
+                case '1year': monthsToAdd = 12; break;
+            }
+            
+            const newExpiryDate = new Date();
+            newExpiryDate.setMonth(newExpiryDate.getMonth() + monthsToAdd);
+            
+            // Update company data
+            currentCompany.subscription = 'active';
+            currentCompany.subscriptionExpiry = newExpiryDate.toISOString();
+            currentCompany.lastPayment = {
+                date: new Date().toISOString(),
+                amount: window.selectedPlan.amount,
+                plan: window.selectedPlan.type,
+                transactionId: transactionId,
+                paymentMethod: paymentMethod,
+                status: 'completed'
+            };
+            
+            localStorage.setItem('currentCompany', JSON.stringify(currentCompany));
+            
+            // Update in companies array
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const companyIndex = companies.findIndex(c => c.id === currentCompany.id);
+            if (companyIndex !== -1) {
+                companies[companyIndex] = currentCompany;
+                localStorage.setItem('companies', JSON.stringify(companies));
+            }
+            
+            alert('পেমেন্ট সফল হয়েছে! আপনার সাবস্ক্রিপশন সক্রিয় করা হয়েছে।');
+            closePaymentModal();
+            loadSubscriptionStatus();
+        }
+        
+        // Load price cards
+        function loadPriceCards() {
+            const products = [
+                { key: 'minikit', name: 'মিনিকিট' },
+                { key: 'kash', name: 'কাশ' },
+                { key: 'lalsonno', name: 'লালসোনা' }
+            ];
+            
+            const priceGrid = document.getElementById('priceGrid');
+            priceGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const currentPrice = currentCompany.prices[product.key] || 0;
+                
+                const card = document.createElement('div');
+                card.className = 'price-card';
+                
+                card.innerHTML = `
+                    <div class="product-name">${product.name}</div>
+                    <div class="current-price">৳${currentPrice}</div>
+                    <div class="form-group">
+                        <label>নতুন দাম:</label>
+                        <input type="number" id="price_${product.key}" value="${currentPrice}" min="0" step="0.01">
+                    </div>
+                    <button class="update-btn" onclick="updatePrice('${product.key}')">
+                        দাম আপডেট করুন
+                    </button>
+                `;
+                
+                priceGrid.appendChild(card);
+            });
+        }
+        
+        // Update price
+        function updatePrice(product) {
+            const newPrice = parseFloat(document.getElementById(`price_${product}`).value);
+            
+            if (isNaN(newPrice) || newPrice < 0) {
+                alert('অনুগ্রহ করে সঠিক দাম লিখুন!');
+                return;
+            }
+            
+            // Update current company data
+            currentCompany.prices[product] = newPrice;
+            localStorage.setItem('currentCompany', JSON.stringify(currentCompany));
+            
+            // Update in companies array
+            const companies = JSON.parse(localStorage.getItem('companies') || '[]');
+            const companyIndex = companies.findIndex(c => c.id === currentCompany.id);
+            if (companyIndex !== -1) {
+                companies[companyIndex].prices[product] = newPrice;
+                localStorage.setItem('companies', JSON.stringify(companies));
+            }
+            
+            alert('দাম সফলভাবে আপডেট হয়েছে!');
+            loadPriceCards();
+        }
+        
+        // STEP 5: Company sees orders assigned to them by employee
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            // Filter orders assigned to this company
+            const companyOrders = orders.filter(order => 
+                order.selectedCompany && order.selectedCompany.id === currentCompany.id
+            );
+            
+            const ordersList = document.getElementById('ordersList');
+            
+            if (companyOrders.length === 0) {
+                ordersList.innerHTML = '<p>এখনো কোনো অর্ডার নেই।</p>';
+                return;
+            }
+            
+            ordersList.innerHTML = '';
+            
+            companyOrders.reverse().forEach(order => {
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order-item';
+                
+                let statusClass = 'status-company-assigned';
+                let statusText = 'আপনার কোম্পানিতে নির্ধারিত';
+                
+                if (order.paymentStatus === 'completed') {
+                    statusClass = 'status-completed';
+                    statusText = 'পেমেন্ট সম্পন্ন';
+                    orderDiv.style.background = 'linear-gradient(135deg, #e8f5e8, #c8e6c8)';
+                    orderDiv.style.border = '2px solid #4CAF50';
+                }
+                
+                // Payment button for company assigned orders
+                let paymentButton = '';
+                if (order.status === 'company_assigned' && order.paymentStatus !== 'completed') {
+                    paymentButton = `
+                        <button class="btn" onclick="makePayment(${order.id})" style="background: #4CAF50; margin-top: 1rem;">
+                            💳 পেমেন্ট করুন (৳${order.finalTotalAmount || order.totalAmount})
+                        </button>
+                    `;
+                }
+                
+                orderDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4>অর্ডার #${order.id}</h4>
+                        <span class="order-status ${statusClass}">${statusText}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div><strong>কৃষক:</strong> ${order.farmerName}</div>
+                        <div><strong>ফোন:</strong> ${order.farmerPhone}</div>
+                        <div><strong>পণ্য:</strong> ${order.productName}</div>
+                        <div><strong>পরিমাণ:</strong> ${order.quantity} পিস</div>
+                        <div><strong>দর:</strong> ৳${order.finalPrice || order.price}</div>
+                        <div><strong>মোট:</strong> ৳${order.finalTotalAmount || order.totalAmount}</div>
+                        <div><strong>তারিখ:</strong> ${order.date} ${order.time}</div>
+                        <div><strong>স্থান:</strong> ${order.location}</div>
+                    </div>
+                    <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #2196F3;">
+                        <strong>নির্দেশনা:</strong> কৃষকের সাথে যোগাযোগ করুন এবং নির্ধারিত সময় ও স্থানে পণ্য সংগ্রহ করুন। তারপর পেমেন্ট সম্পন্ন করুন।
+                    </div>
+                    ${paymentButton}
+                `;
+                
+                ordersList.appendChild(orderDiv);
+            });
+        }
+
+        // STEP 6: Company makes payment to complete the order
+        function makePayment(orderId) {
+            if (!confirm('আপনি কি এই অর্ডারের জন্য পেমেন্ট করতে চান?')) {
+                return;
+            }
+            
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].paymentStatus = 'completed';
+                orders[orderIndex].paymentDate = new Date().toISOString();
+                orders[orderIndex].paidBy = currentCompany.id;
+                
+                localStorage.setItem('orders', JSON.stringify(orders));
+                
+                alert('পেমেন্ট সফলভাবে সম্পন্ন হয়েছে! অর্ডারটি এখন সম্পূর্ণ।');
+                loadOrders();
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentCompany');
+            window.location.href = 'index.html';
+        }
+        
+        // Initialize page
+        loadSubscriptionStatus();
+        loadPriceCards();
+        loadOrders();
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event.target === modal) {
+                closePaymentModal();
+            }
+        }
+
+        // Auto-refresh orders every 30 seconds
+        setInterval(loadOrders, 30000);
+    </script>
+</body>
+</html>

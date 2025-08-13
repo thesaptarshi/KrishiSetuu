@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লগইন নির্বাচন - কৃষিসেতু</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans Bengali', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tagline {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .selection-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .selection-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        .selection-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        .selection-card p {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .selection-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+        
+        .selection-btn:hover {
+            background: linear-gradient(135deg, #45a049, #4CAF50);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
+        }
+        
+        .company-btn {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
+        }
+        
+        .company-btn:hover {
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+            box-shadow: 0 12px 35px rgba(33, 150, 243, 0.4);
+        }
+        
+        .admin-btn {
+            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+            box-shadow: 0 8px 25px rgba(156, 39, 176, 0.3);
+        }
+        
+        .admin-btn:hover {
+            background: linear-gradient(135deg, #7B1FA2, #6A1B9A);
+            box-shadow: 0 12px 35px rgba(156, 39, 176, 0.4);
+        }
+        
+        .icon {
+            font-size: 1.5rem;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .back-link a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 1.1rem;
+        }
+        
+        .back-link a:hover {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+                margin: 2rem auto;
+            }
+            
+            .selection-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .selection-card {
+                padding: 2rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🌾 কৃষিসেতু</div>
+        <div class="tagline">আপনার পরিচয় নির্বাচন করুন</div>
+    </div>
+    
+    <div class="container">
+        <div class="selection-grid">
+            <div class="selection-card">
+                <h3>👨‍🌾 কৃষক হিসেবে যোগ দিন</h3>
+                <p>আপনার ফসল বিক্রি করুন সেরা দামে। সরাসরি কোম্পানির সাথে যোগাযোগ করুন এবং মধ্যস্বত্বভোগী ছাড়াই লাভজনক ব্যবসা করুন।</p>
+                <a href="farmer-login.html" class="selection-btn">
+                    <span class="icon">👨‍🌾</span>
+                    <span class="text">কৃষক লগইন</span>
+                </a>
+            </div>
+            
+            <div class="selection-card">
+                <h3>🏢 কোম্পানি হিসেবে যোগ দিন</h3>
+                <p>কৃষকদের কাছ থেকে সরাসরি ফসল কিনুন। আপনার ব্যবসা বাড়ান এবং গুণগত মানের পণ্য সংগ্রহ করুন।</p>
+                <a href="company-login.html" class="selection-btn company-btn">
+                    <span class="icon">🏢</span>
+                    <span class="text">কোম্পানি লগইন</span>
+                </a>
+            </div>
+            
+            <div class="selection-card">
+                <h3>🔐 অ্যাডমিন প্যানেল</h3>
+                <p>সিস্টেম পরিচালনা, অর্ডার নিয়ন্ত্রণ, দাম নির্ধারণ এবং সামগ্রিক প্ল্যাটফর্ম ব্যবস্থাপনা করুন।</p>
+                <a href="admin-login.html" class="selection-btn admin-btn">
+                    <span class="icon">🔐</span>
+                    <span class="text">অ্যাডমিন লগইন</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="back-link">
+            <a href="index.html">← মূল পাতায় ফিরে যান</a>
+        </div>
+    </div>
+</body>
+</html>

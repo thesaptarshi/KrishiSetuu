@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - KrishiSetu (Firebase)</title>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            getDocs, 
+            doc, 
+            updateDoc, 
+            deleteDoc, 
+            query, 
+            where, 
+            orderBy,
+            onSnapshot 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration (replace with your actual config)
+        const firebaseConfig = {
+            apiKey: "your-api-key-here",
+            authDomain: "your-project-id.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project-id.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "your-app-id"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Make Firebase available globally
+        window.db = db;
+        window.firestore = {
+            collection,
+            addDoc,
+            getDocs,
+            doc,
+            updateDoc,
+            deleteDoc,
+            query,
+            where,
+            orderBy,
+            onSnapshot
+        };
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-bottom: 2px solid #444;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .firebase-indicator {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .firebase-status {
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .back-btn, .logout-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-btn:hover, .logout-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            color: #000;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #000000, #333333);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            color: #000;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .section h3 {
+            margin-bottom: 2rem;
+            color: #000;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF6B35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 4px solid #f44336;
+        }
+        
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #333333, #000000);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(135deg, #66BB6A, #4CAF50);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336, #e57373);
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #e57373, #f44336);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .data-table th {
+            background: linear-gradient(135deg, #000000, #333333);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: #000;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #ffffff;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        
+        .add-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .firebase-info {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .firebase-info h4 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+        
+        .sync-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4CAF50;
+        }
+        
+        .sync-indicator.syncing {
+            background: #FF9800;
+            animation: pulse 1s infinite;
+        }
+        
+        .sync-indicator.error {
+            background: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="goBack()">
+                ← পূর্ববর্তী
+            </button>
+            <div class="logo">
+                🔐 অ্যাডমিন ড্যাশবোর্ড
+            </div>
+            <div class="firebase-indicator">
+                <div class="firebase-status"></div>
+                Firebase Connected
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="logout-btn" onclick="logout()">
+                লগআউট
+            </button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Firebase Connection Info -->
+        <div class="firebase-info">
+            <h4>🔥 Firebase Real-time Database Connected</h4>
+            <p>All data is now stored in Firebase and synced in real-time</p>
+            <div class="sync-status">
+                <div class="sync-indicator" id="syncIndicator"></div>
+                <span id="syncStatus">Connected</span>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalFarmers">
+                    <div class="loading-spinner"></div>
+                </div>
+                <div class="stat-label">মোট কৃষক</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCompanies">
+                    <div class="loading-spinner"></div>
+                </div>
+                <div class="stat-label">মোট কোম্পানি</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalOrders">
+                    <div class="loading-spinner"></div>
+                </div>
+                <div class="stat-label">মোট অর্ডার</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingOrders">
+                    <div class="loading-spinner"></div>
+                </div>
+                <div class="stat-label">অপেক্ষমাণ অর্ডার</div>
+            </div>
+        </div>
+        
+        <!-- Farmers Section -->
+        <div class="section">
+            <h3>👨‍🌾 কৃষক তথ্য (Firebase)</h3>
+            
+            <!-- Add Farmer Form -->
+            <div class="add-form">
+                <input type="text" id="newFarmerName" placeholder="কৃষকের নাম">
+                <input type="tel" id="newFarmerPhone" placeholder="ফোন নম্বর">
+                <input type="email" id="newFarmerEmail" placeholder="ইমেইল">
+                <input type="text" id="newFarmerLocation" placeholder="এলাকা">
+                <input type="text" id="newFarmerBank" placeholder="ব্যাংক অ্যাকাউন্ট">
+                <input type="text" id="newFarmerIfsc" placeholder="IFSC কোড">
+                <button class="btn" onclick="addFarmerToFirebase()">
+                    কৃষক যোগ করুন
+                </button>
+            </div>
+
+            <div id="farmersLoading" class="loading">
+                <div class="loading-spinner"></div>
+                Firebase থেকে কৃষক তথ্য লোড করা হচ্ছে...
+            </div>
+            
+            <table class="data-table" id="farmersTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>নাম</th>
+                        <th>ফোন</th>
+                        <th>ইমেইল</th>
+                        <th>এলাকা</th>
+                        <th>ব্যাংক</th>
+                        <th>নিবন্ধনের তারিখ</th>
+                        <th>কার্যক্রম</th>
+                    </tr>
+                </thead>
+                <tbody id="farmersTableBody">
+                    <!-- Farmers data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Companies Section -->
+        <div class="section">
+            <h3>🏢 কোম্পানি তথ্য (Firebase)</h3>
+            
+            <!-- Add Company Form -->
+            <div class="add-form">
+                <input type="text" id="newCompanyName" placeholder="কোম্পানির নাম">
+                <input type="text" id="newCompanyOwner" placeholder="মালিকের নাম">
+                <input type="text" id="newCompanyLocation" placeholder="এলাকা">
+                <input type="email" id="newCompanyEmail" placeholder="ইমেইল">
+                <input type="tel" id="newCompanyPhone" placeholder="ফোন নম্বর">
+                <input type="text" id="newCompanyBank" placeholder="ব্যাংক অ্যাকাউন্ট">
+                <button class="btn" onclick="addCompanyToFirebase()">
+                    কোম্পানি যোগ করুন
+                </button>
+            </div>
+
+            <div id="companiesLoading" class="loading">
+                <div class="loading-spinner"></div>
+                Firebase থেকে কোম্পানি তথ্য লোড করা হচ্ছে...
+            </div>
+            
+            <table class="data-table" id="companiesTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>কোম্পানির নাম</th>
+                        <th>মালিক</th>
+                        <th>এলাকা</th>
+                        <th>ফোন</th>
+                        <th>সাবস্ক্রিপশন</th>
+                        <th>নিবন্ধনের তারিখ</th>
+                        <th>কার্যক্রম</th>
+                    </tr>
+                </thead>
+                <tbody id="companiesTableBody">
+                    <!-- Companies data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Orders Section -->
+        <div class="section">
+            <h3>📋 অর্ডার পরিচালনা (Firebase)</h3>
+
+            <div id="ordersLoading" class="loading">
+                <div class="loading-spinner"></div>
+                Firebase থেকে অর্ডার তথ্য লোড করা হচ্ছে...
+            </div>
+            
+            <div id="ordersList" style="display: none;">
+                <!-- Orders will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if admin is logged in
+        if (!localStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin-login.html';
+        }
+
+        // Global variables
+        let farmersData = [];
+        let companiesData = [];
+        let ordersData = [];
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'index.html';
+        }
+
+        // Update sync status
+        function updateSyncStatus(status, message) {
+            const indicator = document.getElementById('syncIndicator');
+            const statusText = document.getElementById('syncStatus');
+            
+            indicator.className = `sync-indicator ${status}`;
+            statusText.textContent = message;
+        }
+
+        // Firebase operations
+        async function addFarmerToFirebase() {
+            const name = document.getElementById('newFarmerName').value;
+            const phone = document.getElementById('newFarmerPhone').value;
+            const email = document.getElementById('newFarmerEmail').value;
+            const location = document.getElementById('newFarmerLocation').value;
+            const bank = document.getElementById('newFarmerBank').value;
+            const ifsc = document.getElementById('newFarmerIfsc').value;
+            
+            if (!name || !phone || !email || !location || !bank || !ifsc) {
+                showMessage('সব তথ্য পূরণ করুন!', 'error');
+                return;
+            }
+            
+            try {
+                updateSyncStatus('syncing', 'Adding farmer...');
+                
+                const farmerData = {
+                    name,
+                    phone,
+                    email,
+                    location,
+                    bank,
+                    ifsc,
+                    registeredAt: new Date().toISOString()
+                };
+                
+                const docRef = await window.firestore.addDoc(
+                    window.firestore.collection(window.db, 'farmers'), 
+                    farmerData
+                );
+                
+                // Clear form
+                document.getElementById('newFarmerName').value = '';
+                document.getElementById('newFarmerPhone').value = '';
+                document.getElementById('newFarmerEmail').value = '';
+                document.getElementById('newFarmerLocation').value = '';
+                document.getElementById('newFarmerBank').value = '';
+                document.getElementById('newFarmerIfsc').value = '';
+                
+                showMessage('কৃষক সফলভাবে যোগ করা হয়েছে!', 'success');
+                updateSyncStatus('', 'Connected');
+                
+            } catch (error) {
+                console.error('Error adding farmer:', error);
+                showMessage('কৃষক যোগ করতে সমস্যা হয়েছে!', 'error');
+                updateSyncStatus('error', 'Error');
+            }
+        }
+
+        async function addCompanyToFirebase() {
+            const name = document.getElementById('newCompanyName').value;
+            const owner = document.getElementById('newCompanyOwner').value;
+            const location = document.getElementById('newCompanyLocation').value;
+            const email = document.getElementById('newCompanyEmail').value;
+            const phone = document.getElementById('newCompanyPhone').value;
+            const bank = document.getElementById('newCompanyBank').value;
+            
+            if (!name || !owner || !location || !email || !phone || !bank) {
+                showMessage('সব তথ্য পূরণ করুন!', 'error');
+                return;
+            }
+            
+            try {
+                updateSyncStatus('syncing', 'Adding company...');
+                
+                const companyData = {
+                    name,
+                    owner,
+                    location,
+                    email,
+                    phone,
+                    bank,
+                    subscription: 'trial',
+                    subscriptionExpiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    prices: {
+                        minikit: 1500,
+                        kash: 3000,
+                        lalsonno: 1350
+                    },
+                    registeredAt: new Date().toISOString()
+                };
+                
+                const docRef = await window.firestore.addDoc(
+                    window.firestore.collection(window.db, 'companies'), 
+                    companyData
+                );
+                
+                // Clear form
+                document.getElementById('newCompanyName').value = '';
+                document.getElementById('newCompanyOwner').value = '';
+                document.getElementById('newCompanyLocation').value = '';
+                document.getElementById('newCompanyEmail').value = '';
+                document.getElementById('newCompanyPhone').value = '';
+                document.getElementById('newCompanyBank').value = '';
+                
+                showMessage('কোম্পানি সফলভাবে যোগ করা হয়েছে!', 'success');
+                updateSyncStatus('', 'Connected');
+                
+            } catch (error) {
+                console.error('Error adding company:', error);
+                showMessage('কোম্পানি যোগ করতে সমস্যা হয়েছে!', 'error');
+                updateSyncStatus('error', 'Error');
+            }
+        }
+
+        async function deleteFarmerFromFirebase(farmerId) {
+            if (!confirm('আপনি কি নিশ্চিত যে এই কৃষককে মুছে দিতে চান?')) {
+                return;
+            }
+            
+            try {
+                updateSyncStatus('syncing', 'Deleting farmer...');
+                
+                await window.firestore.deleteDoc(
+                    window.firestore.doc(window.db, 'farmers', farmerId)
+                );
+                
+                showMessage('কৃষক সফলভাবে মুছে দেওয়া হয়েছে!', 'success');
+                updateSyncStatus('', 'Connected');
+                
+            } catch (error) {
+                console.error('Error deleting farmer:', error);
+                showMessage('কৃষক মুছতে সমস্যা হয়েছে!', 'error');
+                updateSyncStatus('error', 'Error');
+            }
+        }
+
+        async function deleteCompanyFromFirebase(companyId) {
+            if (!confirm('আপনি কি নিশ্চিত যে এই কোম্পানিটি মুছে দিতে চান?')) {
+                return;
+            }
+            
+            try {
+                updateSyncStatus('syncing', 'Deleting company...');
+                
+                await window.firestore.deleteDoc(
+                    window.firestore.doc(window.db, 'companies', companyId)
+                );
+                
+                showMessage('কোম্পানি সফলভাবে মুছে দেওয়া হয়েছে!', 'success');
+                updateSyncStatus('', 'Connected');
+                
+            } catch (error) {
+                console.error('Error deleting company:', error);
+                showMessage('কোম্পানি মুছতে সমস্যা হয়েছে!', 'error');
+                updateSyncStatus('error', 'Error');
+            }
+        }
+
+        // Load data from Firebase
+        async function loadFarmersFromFirebase() {
+            try {
+                const querySnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'farmers')
+                );
+                
+                farmersData = [];
+                querySnapshot.forEach((doc) => {
+                    farmersData.push({ id: doc.id, ...doc.data() });
+                });
+                
+                renderFarmersTable();
+                document.getElementById('farmersLoading').style.display = 'none';
+                document.getElementById('farmersTable').style.display = 'table';
+                
+            } catch (error) {
+                console.error('Error loading farmers:', error);
+                document.getElementById('farmersLoading').innerHTML = 
+                    '<div class="error-message">Firebase থেকে কৃষক তথ্য লোড করতে সমস্যা হয়েছে!</div>';
+            }
+        }
+
+        async function loadCompaniesFromFirebase() {
+            try {
+                const querySnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'companies')
+                );
+                
+                companiesData = [];
+                querySnapshot.forEach((doc) => {
+                    companiesData.push({ id: doc.id, ...doc.data() });
+                });
+                
+                renderCompaniesTable();
+                document.getElementById('companiesLoading').style.display = 'none';
+                document.getElementById('companiesTable').style.display = 'table';
+                
+            } catch (error) {
+                console.error('Error loading companies:', error);
+                document.getElementById('companiesLoading').innerHTML = 
+                    '<div class="error-message">Firebase থেকে কোম্পানি তথ্য লোড করতে সমস্যা হয়েছে!</div>';
+            }
+        }
+
+        async function loadOrdersFromFirebase() {
+            try {
+                const q = window.firestore.query(
+                    window.firestore.collection(window.db, 'orders'),
+                    window.firestore.orderBy('createdAt', 'desc')
+                );
+                const querySnapshot = await window.firestore.getDocs(q);
+                
+                ordersData = [];
+                querySnapshot.forEach((doc) => {
+                    ordersData.push({ id: doc.id, ...doc.data() });
+                });
+                
+                renderOrdersList();
+                document.getElementById('ordersLoading').style.display = 'none';
+                document.getElementById('ordersList').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('ordersLoading').innerHTML = 
+                    '<div class="error-message">Firebase থেকে অর্ডার তথ্য লোড করতে সমস্যা হয়েছে!</div>';
+            }
+        }
+
+        // Render functions
+        function renderFarmersTable() {
+            const tbody = document.getElementById('farmersTableBody');
+            tbody.innerHTML = '';
+            
+            farmersData.forEach(farmer => {
+                const row = document.createElement('tr');
+                const registeredDate = farmer.registeredAt ? 
+                    new Date(farmer.registeredAt).toLocaleDateString() : 'N/A';
+                
+                row.innerHTML = `
+                    <td>${farmer.name}</td>
+                    <td>${farmer.phone}</td>
+                    <td>${farmer.email}</td>
+                    <td>${farmer.location}</td>
+                    <td>${farmer.bank}</td>
+                    <td>${registeredDate}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteFarmerFromFirebase('${farmer.id}')">
+                            মুছুন
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderCompaniesTable() {
+            const tbody = document.getElementById('companiesTableBody');
+            tbody.innerHTML = '';
+            
+            companiesData.forEach(company => {
+                const row = document.createElement('tr');
+                const registeredDate = company.registeredAt ? 
+                    new Date(company.registeredAt).toLocaleDateString() : 'N/A';
+                
+                let subscriptionStatus = company.subscription || 'trial';
+                let statusClass = subscriptionStatus === 'active' ? 'btn-success' : 'btn';
+                
+                row.innerHTML = `
+                    <td>${company.name}</td>
+                    <td>${company.owner}</td>
+                    <td>${company.location}</td>
+                    <td>${company.phone}</td>
+                    <td><span class="btn ${statusClass}" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">${subscriptionStatus}</span></td>
+                    <td>${registeredDate}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteCompanyFromFirebase('${company.id}')">
+                            মুছুন
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderOrdersList() {
+            const ordersList = document.getElementById('ordersList');
+            
+            if (ordersData.length === 0) {
+                ordersList.innerHTML = '<p>এখনো কোনো অর্ডার নেই।</p>';
+                return;
+            }
+            
+            ordersList.innerHTML = '';
+            
+            ordersData.forEach(order => {
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order-item';
+                orderDiv.style.cssText = `
+                    border: 1px solid #ddd;
+                    border-radius: 10px;
+                    padding: 1.5rem;
+                    margin-bottom: 1rem;
+                    background: #fafafa;
+                `;
+                
+                const orderDate = order.createdAt ? 
+                    new Date(order.createdAt.seconds * 1000).toLocaleDateString() : 
+                    (order.date || 'N/A');
+                
+                orderDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4>অর্ডার #${order.id.substring(0, 8)}</h4>
+                        <span style="background: #fff3cd; color: #856404; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: bold;">
+                            ${order.status || 'pending'}
+                        </span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div><strong>কৃষক:</strong> ${order.farmerName || 'N/A'}</div>
+                        <div><strong>ফোন:</strong> ${order.farmerPhone || 'N/A'}</div>
+                        <div><strong>পণ্য:</strong> ${order.productName || 'N/A'}</div>
+                        <div><strong>পরিমাণ:</strong> ${order.quantity || 0} পিস</div>
+                        <div><strong>দর:</strong> ৳${order.price || 0}</div>
+                        <div><strong>মোট:</strong> ৳${order.totalAmount || 0}</div>
+                        <div><strong>তারিখ:</strong> ${orderDate}</div>
+                        <div><strong>স্থান:</strong> ${order.location || 'N/A'}</div>
+                    </div>
+                `;
+                
+                ordersList.appendChild(orderDiv);
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('totalFarmers').textContent = farmersData.length;
+            document.getElementById('totalCompanies').textContent = companiesData.length;
+            document.getElementById('totalOrders').textContent = ordersData.length;
+            
+            const pendingOrders = ordersData.filter(order => 
+                order.status === 'pending' || !order.status
+            ).length;
+            document.getElementById('pendingOrders').textContent = pendingOrders;
+        }
+
+        // Show message function
+        function showMessage(message, type) {
+            // Remove existing messages
+            const existingMessages = document.querySelectorAll('.success-message, .error-message');
+            existingMessages.forEach(msg => msg.remove());
+
+            // Create new message
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.textContent = message;
+            
+            // Insert at the top of the container
+            const container = document.querySelector('.container');
+            container.insertBefore(messageDiv, container.firstChild);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        // Set up real-time listeners
+        function setupRealtimeListeners() {
+            // Listen to farmers changes
+            window.firestore.onSnapshot(
+                window.firestore.collection(window.db, 'farmers'),
+                (snapshot) => {
+                    farmersData = [];
+                    snapshot.forEach((doc) => {
+                        farmersData.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderFarmersTable();
+                    updateStats();
+                }
+            );
+
+            // Listen to companies changes
+            window.firestore.onSnapshot(
+                window.firestore.collection(window.db, 'companies'),
+                (snapshot) => {
+                    companiesData = [];
+                    snapshot.forEach((doc) => {
+                        companiesData.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderCompaniesTable();
+                    updateStats();
+                }
+            );
+
+            // Listen to orders changes
+            window.firestore.onSnapshot(
+                window.firestore.query(
+                    window.firestore.collection(window.db, 'orders'),
+                    window.firestore.orderBy('createdAt', 'desc')
+                ),
+                (snapshot) => {
+                    ordersData = [];
+                    snapshot.forEach((doc) => {
+                        ordersData.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderOrdersList();
+                    updateStats();
+                }
+            );
+        }
+
+        // Initialize the dashboard
+        async function initializeDashboard() {
+            try {
+                // Wait for Firebase to be ready
+                await new Promise(resolve => {
+                    const checkFirebase = () => {
+                        if (window.db && window.firestore) {
+                            resolve();
+                        } else {
+                            setTimeout(checkFirebase, 100);
+                        }
+                    };
+                    checkFirebase();
+                });
+
+                // Load initial data
+                await Promise.all([
+                    loadFarmersFromFirebase(),
+                    loadCompaniesFromFirebase(),
+                    loadOrdersFromFirebase()
+                ]);
+
+                // Update statistics
+                updateStats();
+
+                // Set up real-time listeners
+                setupRealtimeListeners();
+
+                updateSyncStatus('', 'Connected');
+                
+            } catch (error) {
+                console.error('Error initializing dashboard:', error);
+                updateSyncStatus('error', 'Connection Error');
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    </script>
+</body>
+</html>
